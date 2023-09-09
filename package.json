@@ -1,0 +1,37 @@
+{
+  "name": "a-perfect-discord-bot",
+  "version": "1.0.0",
+  "description": "A perfect you need for your discord server",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "cmd": "nodemon deployslash.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WIZARDOF-OZ/AIO-Discord-Bot.git"
+  },
+  "keywords": [
+    "BestDiscordBot",
+    "Discord.JS",
+    "Moderation-Bot"
+  ],
+  "author": "WizardOF-Oz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/WIZARDOF-OZ/AIO-Discord-Bot/issues"
+  },
+  "homepage": "https://github.com/WIZARDOF-OZ/AIO-Discord-Bot#readme",
+  "dependencies": {
+    "discord.js": "^14.13.0",
+    "distube": "^4.1.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "ms": "^2.1.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.48.0",
+    "nodemon": "^3.0.1"
+  }
+}
