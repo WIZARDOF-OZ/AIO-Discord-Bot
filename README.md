@@ -1,4 +1,4 @@
-<p align="center">
+<!-- <p align="center">
   <a href="" rel="noopener">
  <img width=200px height=200px src="https://i.imgur.com/FxL5qM0.jpg" alt="Bot logo"></a>
 </p>
@@ -18,7 +18,7 @@
 ---
 
 <p align="center"> 🤖 Few lines describing what your bot does.
-    <br> 
+    <br>
 </p>
 
 ## 📝 Table of Contents
@@ -118,7 +118,7 @@ until finished
 
 End with an example of getting some data out of the system or using it for a little demo.
 
-## 🚀 Deploying your own bot <a name = "deployment"></a>
+<!-- ## 🚀 Deploying your own bot <a name = "deployment"></a>
 
 To see an example project on how to deploy your bot, please see my own configuration:
 
@@ -127,11 +127,11 @@ To see an example project on how to deploy your bot, please see my own configura
 ## ⛏️ Built Using <a name = "built_using"></a>
 
 - [PRAW](https://praw.readthedocs.io/en/latest/) - Python Reddit API Wrapper
-- [Heroku](https://www.heroku.com/) - SaaS hosting platform
+- [Heroku](https://www.heroku.com/) - SaaS hosting platform -->
 
 ## ✍️ Authors <a name = "authors"></a>
 
-- [@kylelobo](https://github.com/kylelobo) - Idea & Initial work
+- [@kylelobo](https://github.com/) - Idea & Initial work
 
 See also the list of [contributors](https://github.com/kylelobo/The-Documentation-Compendium/contributors) who participated in this project.
 
@@ -139,4 +139,4 @@ See also the list of [contributors](https://github.com/kylelobo/The-Documentatio
 
 - Hat tip to anyone whose code was used
 - Inspiration
-- References
+- References -->
