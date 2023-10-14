@@ -1,7 +1,7 @@
 module.exports = {
     token: process.env.TOKEN,
-    owners: ['583666642010112000'],
-    prefix: '-',
+    owners: ['952975852801523762'], // paste the ownerIDs
+    prefix: '=',
     color: {
         error: '#E72E2B',
         success: '#43B581',
@@ -12,4 +12,10 @@ module.exports = {
         success: '<:tick:846306021663703070>',
         loading: '<a:a_Loading_Pixels:835623379591364608>',
     },
+    dev: {
+        enabled: false,
+        guild: ['810199045036441681'], // pase your guildIds
+        debug: false,
+    },
+
 };

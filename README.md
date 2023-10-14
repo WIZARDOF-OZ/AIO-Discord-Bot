@@ -139,4 +139,4 @@ To see an example project on how to deploy your bot, please see my own configura
 
 - Hat tip to anyone whose code was used
 - Inspiration
-- References -->
+- References

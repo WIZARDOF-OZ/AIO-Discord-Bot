@@ -1,4 +1,6 @@
 const { Events } = require('discord.js');
+// const myBot = require('../index.js');
+
 module.exports = {
     name: Events.InteractionCreate,
     async execute(interaction) {
@@ -15,5 +17,9 @@ module.exports = {
             console.error(`Error executing ${interaction.commandName}`);
             console.error(error);
         }
+
+
+
+
     },
 };

@@ -7,6 +7,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('ping')
         .setDescription('Replies with Pong!'),
+    cooldown: 5,
     async execute(interaction) {
         const ping = Math.round(interaction.client.ws.ping);
         const pingEmbed = new EmbedBuilder()
