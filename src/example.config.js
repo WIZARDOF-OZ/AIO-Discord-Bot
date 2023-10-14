@@ -13,4 +13,10 @@ module.exports = {
         loading: '🔃',
         // you can use any emojis you want it can be animated also.
     },
+    dev: {
+        enabled: false,
+        guild: [''], // pase your guildIds
+        debug: false,
+    },
+
 };
