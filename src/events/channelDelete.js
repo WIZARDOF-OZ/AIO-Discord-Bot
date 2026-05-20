@@ -1,41 +1,115 @@
-const { Events, AuditLogEvent, EmbedBuilder } = require("discord.js");
+const {
+    Events,
+    AuditLogEvent,
+    EmbedBuilder,
+    ChannelType
+} = require("discord.js");
 
 module.exports = {
     name: Events.ChannelDelete,
-    async execute(channel, guild) {
-        channel.guild.fetchAuditLogs({
-            type: AuditLogEvent.ChannelDelete,
-        })
-            .then(async audit => {
-                const { executor } = audit.entries.first()
-                const name = channel.name;
-                const id = channel.id;
-                let type = channel.type;
 
-                if (type == 0) type = 'Text';
-                if (type == 2) type = 'Voice';
-                if (type == 13) type = 'Stage';
-                if (type == 15) type = 'Form';
-                if (type == 5) type = 'Announcement';
-                if (type == 5) type = 'Category';
+    async execute(channel) {
 
-                const channelId = '860060454407766036';
-                const modChannel = await channel.guild.channels.cache.get(channelId);
+        try {
 
-                const modEmbed = new EmbedBuilder()
-                    .setAuthor({ name: `${channel.guild.name} ModLog`, iconURL: channel.guild.iconURL() })
+            // deleted channels can be partial
+            const guild = channel.guild;
+
+            if (!guild) {
+                console.log(
+                    "[ChannelDelete] Guild unavailable"
+                );
+                return;
+            }
+
+            const logChannelId =
+                "860060454407766036";
+
+            const logChannel =
+                guild.channels.cache.get(
+                    logChannelId
+                );
+
+            if (!logChannel) return;
+
+            await new Promise(resolve =>
+                setTimeout(resolve, 1000)
+            );
+
+            const logs =
+                await guild.fetchAuditLogs({
+                    type:
+                        AuditLogEvent.ChannelDelete,
+                    limit: 1
+                });
+
+            const entry =
+                logs.entries.first();
+
+            const executor =
+                entry?.executor?.tag ||
+                "Unknown";
+
+            const types = {
+
+                [ChannelType.GuildText]:
+                    "Text",
+
+                [ChannelType.GuildVoice]:
+                    "Voice",
+
+                [ChannelType.GuildStageVoice]:
+                    "Stage",
+
+                [ChannelType.GuildForum]:
+                    "Forum",
+
+                [ChannelType.GuildAnnouncement]:
+                    "Announcement",
+
+                [ChannelType.GuildCategory]:
+                    "Category"
+            };
+
+            const embed =
+                new EmbedBuilder()
                     .setColor("Red")
-                    .setTitle("Channel Created")
-                    .addFields({ name: "Channel Name", value: `${name}` })
-                    .addFields({ name: "Channel Type", value: `${type}` })
-                    .addFields({ name: "Channel Id", value: `${id}` })
-                    .addFields({ name: "Deleted By", value: `${executor.tag}` })
-                    .setTimestamp()
-                    .setThumbnail(channel.guild.iconURL())
-                    .setFooter({ text: "Channel Deleted Log", iconURL: channel.guild.iconURL() })
-                modChannel.send({ embeds: [modEmbed] })
+                    .setTitle(
+                        "🗑️ Channel Deleted"
+                    )
+                    .addFields(
+                        {
+                            name: "Name",
+                            value:
+                                channel.name ||
+                                "Unknown"
+                        },
+                        {
+                            name: "Type",
+                            value:
+                                types[channel.type]
+                                || "Unknown"
+                        },
+                        {
+                            name: "Deleted By",
+                            value:
+                                executor
+                        }
+                    )
+                    .setTimestamp();
 
+            return logChannel.send({
+                embeds: [embed]
+            });
 
-            })
+        } catch (err) {
+
+            console.error(
+                "[ChannelDelete]",
+                err
+            );
+
+        }
+
     }
 };

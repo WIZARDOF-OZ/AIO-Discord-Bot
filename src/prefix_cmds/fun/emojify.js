@@ -1,19 +1,14 @@
-const { emoji } = require("../../config");
+const { emoji, color } = require("../../config");
 
 module.exports = {
     name: 'emojify',
     description: 'Emojifies your text message',
-    aliases: ["emojify"],
+    aliases: ["emj"],
+    args: true,
     usage: '<text>',
     category: 'fun',
 
-    async execute(message, args) {
-
-        if (!args[0]) {
-            return message.channel.send(
-                `${emoji.error || "❎"} Please provide valid text.`,
-            );
-        }
+    async execute(aio, message, args) {
 
         const specialChars = {
             '0': ':zero:',
@@ -34,20 +29,20 @@ module.exports = {
         };
 
         const emojified = `${args.join(' ')}`.toLowerCase().split('').map(letter => {
-            if (/[a-z]/g.test(letter)) {
+            if (/[a-z]/g.test(letter))
                 return `:regional_indicator_${letter}: `;
-            }
-            else if (specialChars[letter]) {
+
+            if (specialChars[letter])
                 return `${specialChars[letter]} `;
-            }
+
             return letter;
         }).join('');
 
         if (emojified.length > 2000) {
-            return message.channel.send(`${emoji.error} The emojified message exceeds 2000 characters.`);
+            return message.reply(`${emoji.error} The emojified message exceeds 2000 characters.`);
         }
 
-        message.channel.send(emojified);
+        message.reply(emojified);
 
     }
 };

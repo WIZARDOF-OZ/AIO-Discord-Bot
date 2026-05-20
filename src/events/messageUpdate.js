@@ -1,32 +1,90 @@
-const { Events, AuditLogEvent, EmbedBuilder } = require("discord.js");
+const {
+    Events,
+    EmbedBuilder
+} = require("discord.js");
 
 module.exports = {
     name: Events.MessageUpdate,
-    async execute(message, newMessage) {
-        message.guild.fetchAuditLogs({
-            type: AuditLogEvent.MessageUpdate,
-        })
-            .then(async audit => {
-                const { executor } = audit.entries.first();
-                const msg = message.content;
-                if (!msg) return;
 
-                const channelId = '860060454407766036';
-                const modChannel = await message.guild.channels.cache.get(channelId);
+    async execute(aio, oldMessage, newMessage) {
 
-                const modEmbed = new EmbedBuilder()
-                    .setAuthor({ name: `${message.guild.name} ModLog`, iconURL: message.guild.iconURL() })
-                    .setColor("Red")
-                    .setTitle("Message Update")
-                    .addFields({ name: "Old Message", value: `${msg}` })
-                    .addFields({ name: "New Message", value: `${newMessage}` })
-                    .addFields({ name: "Edited By", value: `${executor.tag}` })
-                    .setTimestamp()
-                    .setThumbnail(message.guild.iconURL())
-                    .setFooter({ text: "Message Edit Log", iconURL: message.guild.iconURL() })
-                modChannel.send({ embeds: [modEmbed] });
+        try {
 
+            if (
+                oldMessage.partial
+            ) {
 
+                await oldMessage.fetch();
+            }
+
+            if (
+                newMessage.partial
+            ) {
+
+                await newMessage.fetch();
+            }
+
+            if (
+                !oldMessage.guild ||
+                oldMessage.author.bot
+            ) return;
+
+            if (
+                oldMessage.content ===
+                newMessage.content
+            ) return;
+
+            const channelId =
+                "860060454407766036";
+
+            const modChannel =
+                oldMessage.guild.channels.cache.get(
+                    channelId
+                );
+
+            if (!modChannel) return;
+
+            const embed =
+                new EmbedBuilder()
+                    .setColor("Yellow")
+                    .setTitle(
+                        "✏️ Message Edited"
+                    )
+                    .addFields(
+                        {
+                            name: "User",
+                            value:
+                                oldMessage.author.tag
+                        },
+                        {
+                            name: "Old",
+                            value:
+                                oldMessage.content
+                                    ?.slice(0, 1000)
+                                || "None"
+                        },
+                        {
+                            name: "New",
+                            value:
+                                newMessage.content
+                                    ?.slice(0, 1000)
+                                || "None"
+                        }
+                    )
+                    .setTimestamp();
+
+            return modChannel.send({
+                embeds: [embed]
             });
-    },
+
+        } catch (err) {
+
+            console.error(
+                "[MessageUpdate]",
+                err
+            );
+
+        }
+
+    }
 };

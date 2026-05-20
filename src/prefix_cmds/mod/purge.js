@@ -1,35 +1,51 @@
-const { emoji } = require("../../config.js")
-
+const { emoji, color } = require("../../config.js")
+const { EmbedBuilder, PermissionFlagsBits } = require("discord.js")
 module.exports = {
     name: "purge",
     aliases: ['delete', 'clear'],
     cooldown: 2,
     category: "mod",
     description: 'Use to delete messages',
-    ownerOnly: false,
-    enabled: true,
-    memberPermissions: ['ManageMessages'],
+    usage: "purge <amount>",
+    args: true,
+    memberPermissions: [PermissionFlagsBits.ManageMessages, PermissionFlagsBits.ManageChannels],
+    guildOnly: true,
+    requiredRoles: ['835797270913482802'], // role IDS
 
-    execute: async (message, args) => {
-        try {
-            // if (!message.member.permissions.has('ManageMessages')) return message.reply("You Don't Have MANAGE MESSAGES Perms");
+    async execute(aio, message, args) {
+        const amount = parseInt(args[0])
 
-            if (!args[0]) return message.reply(`${emoji.error} | Please enter the amount of messages to clear`);
 
-            if (isNaN(args[0])) return message.reply(`${emoji.error} | Please type a real number!`);
 
-            if (args[0] > 1000) return message.reply(`${emoji.error} | You can't remove more than 1000 messages!`);
+        if (isNaN(amount)) return message.reply(`${emoji.error} Please provide a valid number.`);
+        if (amount < 1) return message.reply(`${emoji.error} You need to delete at least 1 message.`);
+        if (amount > 100) return message.reply(`${emoji.error} You can only delete up to 100 messages at a time.`);
 
-            if (args[0] < 1) return message.reply(`${emoji.error} | You have to delete at least one message!`);
-            await message.channel.messages.fetch({ limit: args[0] }).then(async n => {
-                await message.channel.bulkDelete(n)
-                await message.channel.send(`${emoji.success} | ${message.author} | Deleted ${n.size} Messages `).then(message => setTimeout(() => message.delete(), 4000))
-            })
+        await message.delete().catch(() => null);
 
-        } catch (error) {
-            message.reply(`${error.stack}`)
-            console.log(error)
-        }
+        const messages = await message.channel.messages.fetch({ limit: amount })
 
+        const deletable = messages.filter(m => {
+            const twoWeeksAgo = Date.now() - 14 * 24 * 60 * 60 * 1000;
+            return m.createdTimestamp > twoWeeksAgo;
+
+        });
+
+        if (!deletable.size) return message.reply(`${emoji.error} | No messages to delete! Messages older than 14 days cannot be deleted!`);
+
+        const deleted = await message.channel.bulkDelete(deletable, true).catch(err => {
+            console.log(' [Purge Error]', err);
+            return null;
+        });
+
+        if (!deleted) return message.channel.send(`${emoji.error} Something went wrong while deleting messages.`);
+        const embed = new EmbedBuilder()
+            .setColor(color.success)
+            .setDescription(`${emoji.success} Deleted **${deleted.size}** message(s) in ${message.channel}.`)
+            .setFooter({ text: `Purged by ${message.author.username}`, iconURL: message.author.displayAvatarURL() })
+            .setTimestamp();
+
+        const reply = await message.channel.send({ embeds: [embed] });
+        setTimeout(() => reply.delete().catch(() => null), 5000);
     }
 }

@@ -1,54 +1,118 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 
 const ms = require('ms');
+const { usage } = require('./purge');
+const { emoji, prefix } = require('../../config');
 module.exports = {
 
     name: "slowmode",
     category: 'mod',
     description: "Set the slowmode for the channel!",
-    permissions: 'MANAGE_CHANNELS',
+    permissions: [PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageMessages],
     aliases: ['sm'],
-    guildOnly: false,
+    usage: "slowmode <time/off> [reason]",
+    args: true,
+    guildOnly: true,
+    cooldown: 2,
 
-    execute: async (message, args) => {
+    async execute(aio, message, args) {
 
-        if (!message.member.permissions.has('MANAGE_CHANNELS')) return message.channel.send('You do not have **MANAGE_CHANNELS** permission!').then(m => m.delete({ timeout: 10000 }));
-
-        if (!args[0]) return message.channel.send('You did not specify a time!').then(m => m.delete({ timeout: 5000 }));
+        if (
+            !message.guild.members.me.permissions.has(
+                PermissionFlagsBits.ManageChannels
+            )
+        ) {
+            return message.reply({
+                content:
+                    "❌ I need **Manage Channels** permission."
+            });
+        }
+        if (!args[0]) {
+            return message.reply({
+                content:
+                    `Usage: \`${prefix}slowmode <time/off> [reason]\`\nExamples:\n\`!slowmode 10s spam control\`\n\`!slowmode 5m\`\n\`!slowmode off\``
+            });
+        }
 
         const currentCooldown = message.channel.rateLimitPerUser;
 
-        const reason = args[1] ? args.slice(1).join(' ') : 'no reason';
+        const reason = args[1] ? args.slice(1).join(' ') : 'No reason provided';
 
-        const embed = new EmbedBuilder()
-            .setFooter({ text: `${message.author.tag} | ${message.author.id}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) });
+        // Turn off slowmode
 
-        if (args[0] === 'off') {
+        if (args[0].toLowerCase() === 'off') {
+            if (currentCooldown === 0) return message.reply("Slowmode is already off!");
 
-            if (currentCooldown === 0) return message.channel.send('Channel cooldown is already off').then(m => m.delete({ timeout: 5000 }));
-
-            embed.setTitle('Slowmode Disabled')
-                .setColor('#00ff00');
-            return message.channel.setRateLimitPerUser(0, reason);
+            await message.channel.setRateLimitPerUser(0, reason);
+            return message.reply(
+                {
+                    embeds: [
+                        new EmbedBuilder()
+                            .setColor('Green')
+                            .setDescription(` ${emoji.success} Slowmode has been turned off!\nReason: ${reason}`)
+                            .setFooter({ text: `Changed by ${message.author.tag}`, iconURL: message.author.displayAvatarURL() })
+                            .setTimestamp()
+                    ]
+                }
+            );
 
         }
+        // Convert time
+        const time = ms(args[0]);
 
-        const time = ms(args[0]) / 1000;
+        if (!time) {
+            return message.reply({
+                content:
+                    "❌ Invalid time.\nExamples: `10s`, `1m`, `5m`, `1h`"
+            });
+        }
 
-        if (isNaN(time)) return message.channel.send('not a valid time, please try again!').then(m => m.delete({ timeout: 5000 }));
+        const seconds = Math.floor(time / 1000);
 
-        if (time >= 21600) return message.channel.send('That slowmode limit is too high, please enter anything lower than 6 hours.').then(m => m.delete({ timeout: 5000 }));
+        // Discord max = 21600 sec = 6h
+        if (seconds > 21600) {
+            return message.reply({
+                content:
+                    "❌ Maximum slowmode is **6 hours**."
+            });
+        }
+        if (currentCooldown === seconds) {
+            return message.reply({
+                content:
+                    `⚠️ Slowmode already set to **${args[0]}**`
+            });
+        }
 
-        if (currentCooldown === time) return message.channel.send(`Slowmode is already set to ${args[0]}`);
+        await message.channel.setRateLimitPerUser(
+            seconds,
+            reason
+        );
 
-        embed.setTitle('Slowmode Enabled')
-            .addFields([
-                { name: 'Slowmode:', value: args[0] },
-                { name: 'Reason:', value: reason },
-            ])
-            .setColor(0xff0000);
+        const embed = new EmbedBuilder()
+            .setTitle("🐢 Slowmode Enabled")
+            .addFields(
+                {
+                    name: "Duration",
+                    value: args[0],
+                    inline: true
+                },
+                {
+                    name: "Reason",
+                    value: reason,
+                    inline: true
+                }
+            )
+            .setColor("Orange")
+            .setFooter({
+                text: `${message.author.tag}`,
+                iconURL:
+                    message.author.displayAvatarURL()
+            });
 
-        message.channel.setRateLimitPerUser(time, reason).then(m => m.send({ embeds: [embed] }));
+        return message.channel.send({
+            embeds: [embed]
+        });
+
 
     },
 };

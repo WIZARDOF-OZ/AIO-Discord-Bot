@@ -1,8 +1,21 @@
+const { EmbedBuilder } = require('discord.js');
+
 module.exports = {
     name: 'ping',
-    description: 'pong',
+    description: 'Shows the bot\'s latency.',
     guildOnly: false,
-    execute: (message, args) => {
-        message.reply(`pong ` + ' ' + args)
-    }
-}
+    category: 'fun',
+    cooldown: 3,
+
+    async execute(aio, message, args) {
+
+        const ping = Math.round(aio.ws.ping);
+        const embed = new EmbedBuilder()
+            .setTitle('Pong!')
+            .setDescription(`Latency: ${ping}ms`)
+            .setColor('Green')
+            .setFooter({ text: `Requested by ${message.author.username}`, iconURL: message.author.displayAvatarURL() });
+        message.reply({ embeds: [embed] })
+    },
+
+};

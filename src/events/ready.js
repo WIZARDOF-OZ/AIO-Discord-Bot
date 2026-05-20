@@ -1,11 +1,11 @@
-const { ActivityType } = require("discord.js");
+const { ActivityType, Events } = require("discord.js");
 
 module.exports = {
-    name: 'ready',
+    name: Events.ClientReady,
     once: true,
-    execute(aio) {
+    execute(aio, readyClient) {
 
-        console.log(`Im Online YAYAY ${aio.user.tag}`);
+        console.log(`Im Online YAYAY ${readyClient.user.tag}`);
 
 
         aio.user.setStatus('idle');

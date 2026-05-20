@@ -1,81 +1,93 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, ActivityType } = require('discord.js');
 
 module.exports = {
+    name: 'status',
+    aliases: ['activity'],
+    description: 'Shows the current activity/status of a user',
+    usage: '[@user | userID]',
+    category: 'fun',
+    guildOnly: true,
+    cooldown: 3,
 
-    name: "status",
-    category: "fun",
-    aliases: [""],
-    description: "Shows status of users",
-    usage: "status <@user>",
+    async execute(bio, message, args) {
+        const member = message.mentions.members.first()
+            ?? (args[0] ? await message.guild.members.fetch(args[0]).catch(() => null) : null)
+            ?? message.member;
 
-    async execute(message, args) {
+        if (!member) return message.reply('❌ Could not find that user, please mention them or provide a valid ID.');
 
-        let user = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args.join(' ').toLocaleLowerCase()) || message.guild.members.cache.find(ro => ro.displayName.toLowerCase() === args.join(' ').toLocaleLowerCase()) || message.member;
+        const { presence } = member;
 
-        if (!user.presence.activities.length) {
-            const sembed = new EmbedBuilder()
-                .setAuthor({ name: user.user.username, iconURL: user.user.displayAvatarURL({ dynamic: true }) })
-                .setColor("Green")
-                .setThumbnail(user.user.displayAvatarURL())
-                // .addFields({ name: "**No Status**", value: 'This user does not have any custom status!' })
-                .setDescription(`**No Status**, This user does not have any custom status!`)
+        // No presence data at all
+        if (!presence || !presence.activities.length) {
+            const embed = new EmbedBuilder()
+                .setAuthor({ name: member.user.username, iconURL: member.user.displayAvatarURL() })
+                .setColor('Grey')
+                .setThumbnail(member.user.displayAvatarURL())
+                .setDescription('This user has no current activity.')
                 .setFooter({ text: message.guild.name, iconURL: message.guild.iconURL() })
-                .setTimestamp()
-            message.channel.send({ embeds: [sembed] })
-            return undefined;
+                .setTimestamp();
+
+            return message.reply({ embeds: [embed] });
         }
 
-        user.presence.activities.forEach((activity) => {
+        // Loop through all activities and send one embed per activity
 
-            if (activity.type === 'CUSTOM_STATUS') {
-                const embed = new EmbedBuilder()
-                    .setAuthor({ name: user.user.username, iconURL: user.user.displayAvatarURL({ dynamic: true }) })
-                    .setColor("Green")
-                    .addField("**Status**", `**Custom status** -\n${activity.emoji || "No Emoji"} | ${activity.state}`)
-                    .addFields({ name: "**Status**, **Custom Status** -", value: `\n ${activity.emoji || "No Emoji"} | ${activity.state}` })
-                    .setThumbnail(user.user.displayAvatarURL())
-                    .setFooter({ text: message.guild.name, iconURL: message.guild.iconURL() })
-                    .setTimestamp()
-                message.channel.send({ embeds: [embed] })
+
+        const embed = new EmbedBuilder()
+            .setAuthor({ name: `${member.user.username}'s Status`, iconURL: member.user.displayAvatarURL() })
+            .setThumbnail(member.user.displayAvatarURL())
+            .setColor('Random')
+            .setFooter({ text: message.guild.name, iconURL: message.guild.iconURL() })
+            .setTimestamp();
+
+        for (const activity of presence.activities) {
+
+            if (activity.type === ActivityType.Custom) {
+                embed.addFields({
+                    name: '💬 Custom Status',
+                    value: `${activity.emoji ?? ''} ${activity.state ?? 'No status text'}`.trim(),
+                });
             }
-            else if (activity.type === 'PLAYING') {
-                let name1 = activity.name
-                let details1 = activity.details
-                let state1 = activity.state
-                let image = user.user.displayAvatarURL({ dynamic: true })
 
-                const sembed = new EmbedBuilder()
-                    .setAuthor(`${user.user.username}'s Activity`)
-                    .setColor(0xFFFF00)
-                    .setThumbnail(image)
-                    .addFields({ name: "**Type**", value: "Playing" })
-                    .addFields({ name: "**App**", value: `${name1}` })
-                    .addFields({ name: "**Details**", value: `${details1 || "No Details"}` })
-                    .addFields({ name: "**Working on**", value: `${state1 || "No Details"}` })
-                message.channel.send({ embeds: [sembed] });
+            else if (activity.type === ActivityType.Playing) {
+                embed.addFields({
+                    name: '🎮 Playing',
+                    value: [
+                        `**Game:** ${activity.name}`,
+                        `**Details:** ${activity.details ?? 'No details'}`,
+                        `**State:** ${activity.state ?? 'No state'}`,
+                    ].join('\n'),
+                });
             }
-            else if (activity.type === 'LISTENING' && activity.name === 'Spotify' && activity.assets !== null) {
 
-                let trackIMG = `https://i.scdn.co/image/${activity.assets.largeImage.slice(8)}`;
-                let trackURL = `https://open.spotify.com/track/${activity.syncID}`;
-
-                let trackName = activity.details;
-                let trackAuthor = activity.state;
-                let trackAlbum = activity.assets.largeText;
-
-                trackAuthor = trackAuthor.replace(/;/g, ",")
-
-                const embed = new EmbedBuilder()
-                    .setAuthor('Spotify Track Info', 'https://cdn.discordapp.com/emojis/408668371039682560.png')
-                    .setColor("GREEN")
-                    .setThumbnail(trackIMG)
-                    .addField({ name: 'Song Name', value: trackName, inline: true })
-                    .addField({ name: 'Album', value: trackAlbum, inline: true })
-                    .addField({ name: 'Author', value: trackAuthor, inline: false })
-                    .addField({ name: 'Listen to Track', value: `${trackURL}`, inline: false })
-                    .setFooter(user.displayName, user.user.displayAvatarURL({ dynamic: true }))
-                message.channel.send({ embeds: [embed] });
+            else if (activity.type === ActivityType.Listening && activity.name === 'Spotify') {
+                const trackURL = `https://open.spotify.com/track/${activity.syncId}`;
+                embed.setThumbnail(activity.assets?.largeImageURL() ?? member.user.displayAvatarURL());
+                embed.addFields({
+                    name: '🎵 Listening to Spotify',
+                    value: [
+                        `**Song:** ${activity.details ?? 'Unknown'}`,
+                        `**Artist:** ${activity.state?.replace(/;/g, ',') ?? 'Unknown'}`,
+                        `**Album:** ${activity.assets?.largeText ?? 'Unknown'}`,
+                        `**[Listen on Spotify](${trackURL})**`,
+                    ].join('\n'),
+                });
             }
-        })
-    }
-}
+
+            else if (activity.type === ActivityType.Streaming) {
+                embed.addFields({
+                    name: '🔴 Streaming',
+                    value: [
+                        `**Game:** ${activity.name}`,
+                        `**Details:** ${activity.details ?? 'No details'}`,
+                        `**URL:** ${activity.url ?? 'No URL'}`,
+                    ].join('\n'),
+                });
+            }
+        }
+
+        message.reply({ embeds: [embed] });
+
+    },
+};

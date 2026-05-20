@@ -1,4 +1,5 @@
-const Discord = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
+const { cooldown } = require("./8ball");
 
 module.exports = {
 
@@ -8,33 +9,40 @@ module.exports = {
     usage: "avatar [@user | user ID]",
     category: "fun",
     guildOnly: true,
+    cooldown: 3,
 
-    execute: async (message, args) => {
-        let user;
+    async execute(aio, message, args) {
+        let member;
 
-        if (message.mentions.users.first()) {
-            user = message.mentions.users.first();
+        if (message.mentions.members.first()) {
+            member = message.mentions.members.first();
 
         } else if (args[0]) {
-
-            user = message.guild.members.cache.get(args[0]).user;
+            const id = args[0].replace(/[^0-9]/g, ''); // Remove non-numeric characters
+            member = await message.guild.members.fetch(id).catch(() => null);
 
         } else {
-            user = message.author;
+            member = message.member;
+        }
+        console.log('member:', member);
+        console.log('args[0]:', args[0]);
+
+        if (!member) {
+            return message.reply(`${emoji.error} No user found, please mention them or provide a valid user ID.`);
         }
 
-        let target = message.mentions.members.first() || message.member;
-        if (!target) return message.author;
+        const user = member.user;
 
-        let avatar = user.displayAvatarURL({ size: 4096, dynamic: true, format: "png" });
 
-        const embed = new Discord.EmbedBuilder()
+        const avatar = user.displayAvatarURL({ size: 4096, extension: "png", forceStatic: false });
 
-            .setTitle(`${user.tag} avatar`)
+        const embed = new EmbedBuilder()
+
+            .setTitle(`${user.username} avatar`)
             .setDescription(`[Download the avatar](${avatar})`)
-            .setColor(target.roles.highest.hexColor)
+            .setColor(member.roles.highest.hexColor)
             .setImage(avatar);
 
-        return message.channel.send({ embeds: [embed] });
+        return message.reply({ embeds: [embed] });
     }
 };

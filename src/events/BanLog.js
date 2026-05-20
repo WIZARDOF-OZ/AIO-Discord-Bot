@@ -1,32 +1,89 @@
-const { Events, AuditLogEvent, EmbedBuilder } = require("discord.js");
+const {
+    Events,
+    AuditLogEvent,
+    EmbedBuilder
+} = require("discord.js");
 
 module.exports = {
     name: Events.GuildBanAdd,
-    async execute(member) {
-        member.guild.fetchAuditLogs({
-            type: AuditLogEvent.GuildBanAdd,
-        })
-            .then(async audit => {
-                const { executor } = audit.entries.first();
-                const name = member.user.username;
-                const id = member.user.id;
 
-                const channelId = '860060454407766036';
-                const modChannel = await member.guild.channels.cache.get(channelId);
+    async execute(aio, ban) {
 
-                const modEmbed = new EmbedBuilder()
-                    .setAuthor({ name: `${member.guild.name} ModLog`, iconURL: member.guild.iconURL() })
+        try {
+
+            const guild = ban.guild;
+            const user = ban.user;
+
+            // later move this to database/config
+            const channelId = "860060454407766036";
+
+            const logChannel =
+                guild.channels.cache.get(channelId);
+
+            if (!logChannel) return;
+
+            // small delay so audit logs update
+            await new Promise(resolve =>
+                setTimeout(resolve, 1000)
+            );
+
+            const fetchedLogs =
+                await guild.fetchAuditLogs({
+                    limit: 1,
+                    type: AuditLogEvent.MemberBanAdd
+                });
+
+            const log =
+                fetchedLogs.entries.first();
+
+            const executor =
+                log?.executor || {
+                    tag: "Unknown"
+                };
+
+            const embed =
+                new EmbedBuilder()
                     .setColor("Red")
-                    .setTitle("Member Banned")
-                    .addFields({ name: "Member Name", value: `${name}, <@${id}>` })
-                    .addFields({ name: "Member Id", value: `${id}` })
-                    .addFields({ name: "Banned By", value: `${executor.tag}` })
-                    .setTimestamp()
-                    .setThumbnail(member.guild.iconURL())
-                    .setFooter({ text: "Banned Log", iconURL: member.guild.iconURL() })
-                modChannel.send({ embeds: [modEmbed] });
+                    .setAuthor({
+                        name: `${guild.name} Mod Logs`,
+                        iconURL:
+                            guild.iconURL()
+                    })
+                    .setTitle("🔨 Member Banned")
+                    .addFields(
+                        {
+                            name: "User",
+                            value:
+                                `${user.tag}\n<@${user.id}>`,
+                            inline: true
+                        },
+                        {
+                            name: "User ID",
+                            value: user.id,
+                            inline: true
+                        },
+                        {
+                            name: "Banned By",
+                            value: executor.tag,
+                            inline: true
+                        }
+                    )
+                    .setThumbnail(
+                        user.displayAvatarURL()
+                    )
+                    .setTimestamp();
 
-
+            return logChannel.send({
+                embeds: [embed]
             });
-    },
+
+        } catch (err) {
+
+            console.error(
+                "[BanLog Error]",
+                err
+            );
+
+        }
+    }
 };

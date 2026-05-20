@@ -1,36 +1,103 @@
-const { Events, AuditLogEvent, EmbedBuilder, Message, Channel } = require("discord.js");
+const {
+    Events,
+    EmbedBuilder
+} = require("discord.js");
+
 module.exports = {
     name: Events.MessageDelete,
-    /**
-     * 
-     * @param {Message} message 
-     * @param {Channel} channel 
-     */
-    async execute(message, channel) {
-        message.guild.fetchAuditLogs({
-            type: AuditLogEvent.MessageDelete,
-        })
-            .then(async audit => {
-                const { executor } = audit.entries.first();
-                const msg = message.content;
-                if (!msg) return;
 
-                const channelId = '860060454407766036';
-                const modChannel = await message.guild.channels.cache.get(channelId);
+    async execute(message) {
 
-                const modEmbed = new EmbedBuilder()
-                    .setAuthor({ name: `${message.guild.name} ModLog`, iconURL: message.guild.iconURL() })
+        console.log(
+            "[MessageDelete Event Fired]"
+        );
+
+        try {
+
+            if (message.partial) {
+
+                try {
+
+                    await message.fetch();
+
+                    console.log(
+                        "[Fetched partial message]"
+                    );
+
+                } catch {
+
+                    console.log(
+                        "[Failed partial fetch]"
+                    );
+
+                    return;
+                }
+            }
+
+            if (!message.guild) {
+
+                console.log(
+                    "[No guild]"
+                );
+
+                return;
+            }
+
+            const logChannelId =
+                "860060454407766036";
+
+            const logChannel =
+                message.guild.channels.cache.get(
+                    logChannelId
+                );
+
+            if (!logChannel) {
+
+                console.log(
+                    "[Log channel not found]"
+                );
+
+                return;
+            }
+
+            console.log(
+                `[Found log channel: ${logChannel.name}]`
+            );
+
+            const embed =
+                new EmbedBuilder()
                     .setColor("Red")
-                    .setTitle("Message Deleted")
-                    .addFields({ name: "Message Content", value: `${msg}` })
-                    .addFields({ name: "Message Channel", value: `${msg.channel}` })
-                    .addFields({ name: "Deleted By", value: `${executor.tag}` })
-                    .setTimestamp()
-                    .setThumbnail(message.guild.iconURL())
-                    .setFooter({ text: "Message Delete Log", iconURL: message.guild.iconURL() })
-                modChannel.send({ embeds: [modEmbed] });
+                    .setTitle(
+                        "🗑️ Message Deleted"
+                    )
+                    .setDescription(
+                        `Author: ${message.author?.tag || "Unknown"}`
+                    )
+                    .addFields(
+                        {
+                            name: "Content",
+                            value:
+                                message.content ||
+                                "No content"
+                        }
+                    )
+                    .setTimestamp();
 
-
+            await logChannel.send({
+                embeds: [embed]
             });
-    },
+
+            console.log(
+                "[Embed sent]"
+            );
+
+        } catch (err) {
+
+            console.error(
+                "[MessageDelete ERROR]",
+                err
+            );
+
+        }
+    }
 };
