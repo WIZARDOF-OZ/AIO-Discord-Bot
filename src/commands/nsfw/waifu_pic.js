@@ -24,12 +24,12 @@ module.exports = {
         const category = interaction.options.getString("category");
         if (interaction.options.getNumber("repeat")) { amount = Number(interaction.options.getNumber("repeat")) }
         for (let a = 0; a < amount; a++) {
-            let response = await fetch(`https://waifu.pics/api/nsfw/${category}`);
+            let response = await fetch(`https://api.waifu.im/images`);
             let data = await response.text();
             const img = JSON.parse(data);
             const embed = new EmbedBuilder()
                 .setImage(img.url)
-                .setFooter({ text: `${category} - ${a + 1}/${amount}` })
+
                 .setColor([160, 32, 240]);
             try { await interaction.followUp({ content: `${user || ' '}`, embeds: [embed] }) }
             catch { interaction.reply({ content: `${user | ' '}`, embeds: [embed] }) }
