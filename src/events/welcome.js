@@ -24,12 +24,12 @@ module.exports = {
 
 
         const embed = new EmbedBuilder()
-            .setAuthor({ name: `${member.displayName} Just Join Our Server ${guild.name}`, iconURL: member.user.displayAvatarURL({ dynamic: true }) })
+            .setAuthor({ name: `${member.displayName} Just Join Our Server ${guild.name}`, iconURL: member.user.displayAvatarURL() })
             .setDescription(value.map(x => `> ${x}`).join("\n"))
             .setColor(0xfa9e48)
             .setImage(`https://cdn.discordapp.com/attachments/829287239732559912/852800000463339541/welcome_anime_girl_dc.jpeg`)
             // .setFooter({ text: guild.name, iconURL: guild.iconURL({ dynamic: true }})
-            .setFooter({ text: guild.name, iconURL: guild.iconURL({ dynamic: true }) })
+            .setFooter({ text: guild.name, iconURL: guild.iconURL() })
             .setTimestamp();
         channel.send({ embeds: [embed], content: `${member}` });
     }

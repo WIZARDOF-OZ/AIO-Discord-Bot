@@ -1,27 +1,23 @@
 const {
     Events,
     AuditLogEvent,
-    EmbedBuilder,
-    ChannelType
+    EmbedBuilder
 } = require("discord.js");
 
 const audit =
-    require("../utils/auditLog.js");
+    require("../utils/auditLog");
 
 module.exports = {
 
     name:
-        Events.ChannelCreate,
+        Events.GuildRoleCreate,
 
-    async execute(channel) {
+    async execute(role) {
 
         try {
 
-            if (!channel.guild)
-                return;
-
             const guild =
-                channel.guild;
+                role.guild;
 
             const logChannel =
                 guild.channels.cache.get(
@@ -35,35 +31,15 @@ module.exports = {
                 await audit.get(
 
                     guild,
-                    AuditLogEvent.ChannelCreate
+                    AuditLogEvent.RoleCreate
 
                 );
 
             const executor =
-
                 auditData.executor
                     ?.username ||
 
                 "Unknown";
-
-            const types = {
-
-                [ChannelType.GuildText]:
-                    "Text",
-
-                [ChannelType.GuildVoice]:
-                    "Voice",
-
-                [ChannelType.GuildCategory]:
-                    "Category",
-
-                [ChannelType.GuildAnnouncement]:
-                    "Announcement",
-
-                [ChannelType.GuildForum]:
-                    "Forum"
-
-            };
 
             const embed =
                 new EmbedBuilder()
@@ -73,22 +49,15 @@ module.exports = {
                     )
 
                     .setTitle(
-                        "📁 Channel Created"
+                        "🎭 Role Created"
                     )
 
                     .addFields(
 
                         {
-                            name: "Name",
+                            name: "Role",
                             value:
-                                channel.name
-                        },
-
-                        {
-                            name: "Type",
-                            value:
-                                types[channel.type]
-                                || "Unknown"
+                                role.name
                         },
 
                         {
@@ -97,14 +66,10 @@ module.exports = {
                                 executor
                         }
 
-                    )
-
-                    .setTimestamp();
+                    );
 
             await logChannel.send({
-
                 embeds: [embed]
-
             });
 
         }
@@ -112,7 +77,6 @@ module.exports = {
         catch (err) {
 
             console.error(
-                "[ChannelCreate]",
                 err
             );
 

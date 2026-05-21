@@ -5,29 +5,23 @@ const {
 } = require("discord.js");
 
 const audit =
-    require("../utils/auditLog.js");
+    require("../utils/auditLog");
 
 module.exports = {
 
     name:
-        Events.GuildBanAdd,
+        Events.GuildRoleDelete,
 
-    async execute(ban) {
+    async execute(role) {
 
         try {
 
             const guild =
-                ban.guild;
-
-            const user =
-                ban.user;
-
-            const logChannelId =
-                "860060454407766036";
+                role.guild;
 
             const logChannel =
                 guild.channels.cache.get(
-                    logChannelId
+                    "860060454407766036"
                 );
 
             if (!logChannel)
@@ -37,20 +31,15 @@ module.exports = {
                 await audit.get(
 
                     guild,
-                    AuditLogEvent.MemberBanAdd,
-                    user.id
+                    AuditLogEvent.RoleDelete
 
                 );
 
             const executor =
-
                 auditData.executor
                     ?.username ||
 
                 "Unknown";
-
-            const reason =
-                auditData.reason;
 
             const embed =
                 new EmbedBuilder()
@@ -60,54 +49,27 @@ module.exports = {
                     )
 
                     .setTitle(
-                        "🔨 Member Banned"
+                        "🎭 Role Deleted"
                     )
 
                     .addFields(
 
                         {
-
-                            name: "User",
-
+                            name: "Role",
                             value:
-                                `${user.username}`,
-
-                            inline: true
-
+                                role.name
                         },
 
                         {
-
-                            name: "Banned By",
-
+                            name: "Deleted By",
                             value:
-                                executor,
-
-                            inline: true
-
-                        },
-
-                        {
-
-                            name: "Reason",
-
-                            value:
-                                reason
-
+                                executor
                         }
 
-                    )
-
-                    .setThumbnail(
-                        user.displayAvatarURL()
-                    )
-
-                    .setTimestamp();
+                    );
 
             await logChannel.send({
-
                 embeds: [embed]
-
             });
 
         }
@@ -115,7 +77,6 @@ module.exports = {
         catch (err) {
 
             console.error(
-                "[BanLog]",
                 err
             );
 

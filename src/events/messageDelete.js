@@ -2,15 +2,13 @@ const {
     Events,
     EmbedBuilder
 } = require("discord.js");
-
+const logger = require("../utils/logger");
 module.exports = {
     name: Events.MessageDelete,
 
     async execute(message) {
 
-        console.log(
-            "[MessageDelete Event Fired]"
-        );
+        logger.success("[MessageDelete Event Fired]");
 
         try {
 
@@ -20,15 +18,11 @@ module.exports = {
 
                     await message.fetch();
 
-                    console.log(
-                        "[Fetched partial message]"
-                    );
+                    logger.info("[Fetched partial message]");
 
                 } catch {
 
-                    console.log(
-                        "[Failed partial fetch]"
-                    );
+                    logger.error("[Failed partial fetch]");
 
                     return;
                 }
@@ -36,9 +30,7 @@ module.exports = {
 
             if (!message.guild) {
 
-                console.log(
-                    "[No guild]"
-                );
+                logger.info("[No guild]");
 
                 return;
             }
@@ -53,16 +45,12 @@ module.exports = {
 
             if (!logChannel) {
 
-                console.log(
-                    "[Log channel not found]"
-                );
+                logger.info("[Log channel not found]");
 
                 return;
             }
 
-            console.log(
-                `[Found log channel: ${logChannel.name}]`
-            );
+            logger.info(`[Found log channel: ${logChannel.name}]`);
 
             const embed =
                 new EmbedBuilder()
@@ -87,16 +75,11 @@ module.exports = {
                 embeds: [embed]
             });
 
-            console.log(
-                "[Embed sent]"
-            );
+            logger.info("[Embed sent]");
 
         } catch (err) {
 
-            console.error(
-                "[MessageDelete ERROR]",
-                err
-            );
+            logger.error("[MessageDelete ERROR]", err);
 
         }
     }

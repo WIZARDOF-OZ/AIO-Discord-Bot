@@ -4,85 +4,109 @@ const {
     EmbedBuilder
 } = require("discord.js");
 
-module.exports = {
-    name: Events.GuildBanRemove,
+const audit =
+    require("../utils/auditLog");
 
-    async execute(aio, ban) {
+module.exports = {
+
+    name:
+        Events.GuildBanRemove,
+
+    async execute(ban) {
 
         try {
 
-            const guild = ban.guild;
-            const user = ban.user;
+            const guild =
+                ban.guild;
 
-            const channelId =
-                "860060454407766036";
+            const user =
+                ban.user;
 
             const logChannel =
-                guild.channels.cache.get(channelId);
+                guild.channels.cache.get(
+                    "860060454407766036"
+                );
 
-            if (!logChannel) return;
+            if (!logChannel)
+                return;
 
-            await new Promise(resolve =>
-                setTimeout(resolve, 1000)
-            );
+            const auditData =
+                await audit.get(
 
-            const fetchedLogs =
-                await guild.fetchAuditLogs({
-                    limit: 1,
-                    type: AuditLogEvent.MemberBanRemove
-                });
+                    guild,
+                    AuditLogEvent.MemberBanRemove,
+                    user.id
 
-            const log =
-                fetchedLogs.entries.first();
+                );
 
             const executor =
-                log?.executor || {
-                    tag: "Unknown"
-                };
+
+                auditData.executor
+                    ?.username ||
+
+                "Unknown";
+
+            const reason =
+                auditData.reason;
 
             const embed =
                 new EmbedBuilder()
-                    .setColor("Green")
-                    .setAuthor({
-                        name: `${guild.name} Mod Logs`,
-                        iconURL:
-                            guild.iconURL()
-                    })
-                    .setTitle("✅ Member Unbanned")
+
+                    .setColor(
+                        "Green"
+                    )
+
+                    .setTitle(
+                        "✅ Member Unbanned"
+                    )
+
                     .addFields(
+
                         {
                             name: "User",
                             value:
-                                `${user.tag}\n<@${user.id}>`,
+                                `${user.username}`,
                             inline: true
                         },
-                        {
-                            name: "User ID",
-                            value: user.id,
-                            inline: true
-                        },
+
                         {
                             name: "Unbanned By",
-                            value: executor.tag,
+                            value:
+                                executor,
                             inline: true
+                        },
+
+                        {
+                            name: "Reason",
+                            value:
+                                reason
                         }
+
                     )
+
                     .setThumbnail(
                         user.displayAvatarURL()
                     )
+
                     .setTimestamp();
 
-            return logChannel.send({
+            await logChannel.send({
+
                 embeds: [embed]
+
             });
 
-        } catch (err) {
+        }
+
+        catch (err) {
 
             console.error(
-                "[UnbanLog Error]",
+                "[UnbanLog]",
                 err
             );
 
         }
+
     }
+
 };

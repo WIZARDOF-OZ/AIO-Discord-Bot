@@ -6,7 +6,7 @@ const {
 module.exports = {
     name: Events.MessageUpdate,
 
-    async execute(aio, oldMessage, newMessage) {
+    async execute(oldMessage, newMessage) {
 
         try {
 
@@ -54,7 +54,7 @@ module.exports = {
                         {
                             name: "User",
                             value:
-                                oldMessage.author.tag
+                                oldMessage.author.username
                         },
                         {
                             name: "Old",

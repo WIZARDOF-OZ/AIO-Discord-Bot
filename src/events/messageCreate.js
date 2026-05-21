@@ -11,7 +11,7 @@ module.exports = {
         if (!message.guild) return;
 
         // Prefix checkinng
-        const mentionRegex = new RegExp(`^<@!?${aio.user.id}>\\s* `);
+        const mentionRegex = new RegExp(`^<@!?${aio.user.id}>\\s`);
         let usedPrefix;
 
         if (mentionRegex.test(message.content)) {
@@ -31,7 +31,7 @@ module.exports = {
         // Find the command
         const command = aio.prefix_cmds.get(commandName) || aio.prefix_cmds.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
         if (!command) return message.react('<:woot:1124216085407866911>');
-        if (!command) return; // ignores unknown commands
+
 
         // Guild only check
         if (command.guildOnly && message.channel.type === ChannelType.DM) {
