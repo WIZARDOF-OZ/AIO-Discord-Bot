@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('say')
@@ -7,7 +7,7 @@ module.exports = {
     category: 'fun',
     async execute(interaction) {
         const kay_bolu = interaction.options.getString('words');
-        interaction.reply({ content: kay_bolu, ephemeral: false });
+        interaction.reply({ content: kay_bolu, flags: MessageFlags.Ephemeral })
     },
 
 };

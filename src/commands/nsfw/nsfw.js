@@ -1,81 +1,73 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const akaneko = require("akaneko");
+// const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
+// const akaneko = require('akaneko');
 
-module.exports = {
-    data: new SlashCommandBuilder()
-        .setName("akaneko")
-        .setDescription("get some random akaneko content")
-        .setDMPermission(true)
-        .addStringOption(option => option
-            .setName("type")
-            .setDescription("Choose a type")
-            .addChoices(
-                { name: "ass", value: "ass" },
-                { name: "bdsm", value: "bdsm" },
-                { name: "gifs", value: "gifs" },
-                { name: "glasses", value: "glasses" },
-                { name: "hentai", value: "hentai" },
-                { name: "maid", value: "maid" },
-                { name: "masturbation", value: "masturbation" },
-                { name: "pussy", value: "pussy" },
-                { name: "school", value: "school" },
-                { name: "thigs", value: "thigs" },
-                { name: "uniform", value: "uniform" },
-            )
-            .setRequired(true)
-        ),
-    category: "nsfw",
+// module.exports = {
+//     data: new SlashCommandBuilder()
+//         .setName('akaneko')
+//         .setDescription('Get random akaneko NSFW content')
+//         .setNSFW(true)
+//         .addStringOption(option => option
+//             .setName('type')
+//             .setDescription('Choose a category')
+//             .setRequired(true)
+//             .addChoices(
+//                 { name: 'Ass', value: 'ass' },
+//                 { name: 'BDSM', value: 'bdsm' },
+//                 { name: 'Gifs', value: 'gifs' },
+//                 { name: 'Glasses', value: 'glasses' },
+//                 { name: 'Hentai', value: 'hentai' },
+//                 { name: 'Maid', value: 'maid' },
+//                 { name: 'Masturbation', value: 'masturbation' },
+//                 { name: 'Pussy', value: 'pussy' },
+//                 { name: 'School', value: 'school' },
+//                 { name: 'Thighs', value: 'thighs' },
+//                 { name: 'Uniform', value: 'uniform' },
+//             )),
+//     category: 'nsfw',
 
-    async execute(interaction) {
-        const type = interaction.options.getString("type");
+//     async execute(interaction) {
+//         const type = interaction.options.getString('type');
 
-        const embed = new EmbedBuilder()
-            .setTimestamp()
-            .setTitle(`Category: ${type}`)
-        if (type === "ass") {
-            embed.setImage(await akaneko.nsfw.ass())
-        }
+//         await interaction.deferReply();
 
-        if (type === "bdsm") {
-            embed.setImage(await akaneko.nsfw.bdsm())
-        }
+//         //  Category => akaneko method map
+//         const categoryMap = {
+//             ass: () => akaneko.nsfw.ass(),
+//             bdsm: () => akaneko.nsfw.bdsm(),
+//             gifs: () => akaneko.nsfw.gifs(),
+//             glasses: () => akaneko.nsfw.glasses(),
+//             hentai: () => akaneko.nsfw.hentai(),
+//             maid: () => akaneko.nsfw.maid(),
+//             masturbation: () => akaneko.nsfw.masturbation(),
+//             pussy: () => akaneko.nsfw.pussy(),
+//             school: () => akaneko.nsfw.school(),
+//             thighs: () => akaneko.nsfw.thighs(),
+//             uniform: () => akaneko.nsfw.uniform(),
+//         };
 
-        if (type === "gifs") {
-            embed.setImage(await akaneko.nsfw.gifs())
-        }
+//         const fetchImage = categoryMap[type];
 
-        if (type === "glasses") {
-            embed.setImage(await akaneko.nsfw.glasses())
-        }
+//         if (!fetchImage) {
+//             return interaction.editReply({
+//                 content: `❌ Unknown category \`${type}\`.`,
+//             });
+//         }
 
-        if (type === "hentai") {
-            embed.setImage(await akaneko.nsfw.hentai())
-        }
+//         const imageUrl = await fetchImage();
 
-        if (type === "maid") {
-            embed.setImage(await akaneko.nsfw.maid())
-        }
+//         if (!imageUrl) {
+//             return interaction.editReply({
+//                 content: '❌ Could not fetch an image, try again later.',
+//             });
+//         }
 
-        if (type === "masturbation") {
-            embed.setImage(await akaneko.nsfw.masturbation())
-        }
+//         const embed = new EmbedBuilder()
+//             .setColor('Random')
+//             .setTitle(`🔞 ${type.charAt(0).toUpperCase() + type.slice(1)}`)
+//             .setImage(imageUrl)
+//             .setFooter({ text: `Requested by ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL() })
+//             .setTimestamp();
 
-        if (type === "pussy") {
-            embed.setImage(await akaneko.nsfw.pussy())
-        }
-
-        if (type === "school") {
-            embed.setImage(await akaneko.nsfw.school())
-        }
-
-        if (type === "thigs") {
-            embed.setImage(await akaneko.nsfw.thighs())
-        }
-
-        if (type === "uniform") {
-            embed.setImage(await akaneko.nsfw.uniform())
-        }
-
-        await interaction.reply({ embeds: [embed] });
-    }
-}
+//         await interaction.editReply({ embeds: [embed] });
+//     },
+// };

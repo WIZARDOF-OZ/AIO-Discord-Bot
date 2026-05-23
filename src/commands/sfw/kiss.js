@@ -1,29 +1,28 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const fetch = require("node-fetch");
-const wait = require("node:timers/promises").setTimeout;
-module.exports = {
-    data: new SlashCommandBuilder()
-        .setName("kiss")
-        .setDescription("Wanna Kiss Somebody?")
-        .addUserOption(option => option.setName('user_name')
-            .setDescription('User u want to mention')
-            .setRequired(true)),
-    async execute(interaction) {
-        let amount = 1;
-        let user = interaction.options.getUser('user_name')
-        const category = "kiss";
-        if (interaction.options.getNumber("repeat")) { amount = Number(interaction.options.getNumber("repeat")) }
-        for (let a = 0; a < amount; a++) {
-            let response = await fetch(`https://waifu.pics/api/sfw/${category}`);
-            let data = await response.text();
-            const img = JSON.parse(data);
-            const embed = new EmbedBuilder()
-                .setImage(img.url)
-                .setFooter({ text: `${category} - ${a + 1}/${amount}` })
-                .setColor([160, 32, 240]);
-            try { await interaction.followUp({ content: `${interaction.user.tag} kissed ${user}`, embeds: [embed] }) }
-            catch { interaction.reply({ content: `${interaction.user.tag} kissed ${user}`, embeds: [embed] }) }
-            await wait(1000);
-        }
-    }
-}
+// const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+
+// module.exports = {
+//     data: new SlashCommandBuilder()
+//         .setName('kill')
+//         .setDescription('Kill someone... virtually')
+//         .addUserOption(option => option
+//             .setName('user')
+//             .setDescription('Who do you want to kill?')
+//             .setRequired(true)),
+//     category: 'fun',
+
+//     async execute(interaction) {
+//         const user = interaction.options.getUser('user');
+
+//         const response = await fetch('https://api.waifu.pics/sfw/kiss');
+//         const data = await response.json();
+
+//         const embed = new EmbedBuilder()
+//             .setColor('DarkRed')
+//             .setDescription(`💀 **${interaction.user.username}** killed **${user.username}**!`)
+//             .setImage(data.url)
+//             .setFooter({ text: 'waifu.pics', iconURL: interaction.user.displayAvatarURL() })
+//             .setTimestamp();
+
+//         await interaction.reply({ embeds: [embed] });
+//     },
+// };

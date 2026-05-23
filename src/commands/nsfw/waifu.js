@@ -1,92 +1,44 @@
-const {
-    SlashCommandBuilder,
-    EmbedBuilder,
-    MessageFlags
-} = require("discord.js");
+// const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
-module.exports = {
+// module.exports = {
+//     data: new SlashCommandBuilder()
+//         .setName('waifu')
+//         .setDescription('Get a random waifu image')
+//         .addBooleanOption(option => option
+//             .setName('nsfw')
+//             .setDescription('Get NSFW content (only works in age-restricted channels)')
+//             .setRequired(false))
+//         .setDMPermission(false),
+//     category: 'fun',
 
-    data: new SlashCommandBuilder()
-        .setName("waifu")
-        .setDescription(
-            "Get a random anime image"
-        ),
+//     async execute(interaction) {
+//         const isNsfw = interaction.options.getBoolean('nsfw') ?? false;
 
-    async execute(interaction) {
+//         if (isNsfw && !interaction.channel.nsfw) {
+//             return interaction.reply({
+//                 content: '❌ NSFW content can only be used in age-restricted channels.',
+//                 ephemeral: true,
+//             });
+//         }
 
-        try {
+//         await interaction.deferReply();
 
-            const response =
-                await fetch(
-                    "https://api.waifu.im/search?included_tags=waifu",
-                    {
-                        headers: {
-                            "User-Agent":
-                                "AIO-Discord-Bot/1.0"
-                        }
-                    }
-                );
+//         const type = isNsfw ? 'nsfw' : 'sfw';
+//         const response = await fetch(`https://api.waifu.pics/${type}/waifu`);
 
-            if (!response.ok) {
+//         if (!response.ok) {
+//             return interaction.editReply({ content: `❌ API error ${response.status}, try again later.` });
+//         }
 
-                throw new Error(
-                    `API Error: ${response.status}`
-                );
+//         const data = await response.json();
 
-            }
+//         const embed = new EmbedBuilder()
+//             .setColor('Random')
+//             .setTitle(isNsfw ? '🔞 NSFW Waifu' : '🌸 Random Waifu')
+//             .setImage(data.url)
+//             .setFooter({ text: `Requested by ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL() })
+//             .setTimestamp();
 
-            const data =
-                await response.json();
-
-            const image =
-                data.images?.[0];
-
-            if (!image) {
-
-                return interaction.reply({
-                    content:
-                        "No image found.",
-                    flags:
-                        MessageFlags.Ephemeral
-                });
-
-            }
-
-            const embed =
-                new EmbedBuilder()
-                    .setColor("Random")
-                    .setTitle(
-                        "🌸 Random Waifu"
-                    )
-                    .setImage(
-                        image.url
-                    );
-
-            await interaction.reply({
-                embeds: [embed]
-            });
-
-        }
-
-        catch (err) {
-
-            console.error(
-                "[Waifu Command]",
-                err
-            );
-
-            await interaction.reply({
-
-                content:
-                    `Failed: ${err.message}`,
-
-                flags:
-                    MessageFlags.Ephemeral
-
-            });
-
-        }
-
-    }
-
-};
+//         await interaction.editReply({ embeds: [embed] });
+//     },
+// };

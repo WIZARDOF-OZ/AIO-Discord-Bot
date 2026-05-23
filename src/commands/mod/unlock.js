@@ -1,39 +1,44 @@
-const { SlashCommandBuilder, ChannelType, PermissionFlagsBits, EmbedBuilder, Guild, Interaction } = require('discord.js');
-const { emoji } = require('../../config');
+const { SlashCommandBuilder, ChannelType, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('unlock')
-        .setDescription('Wanna me to unlock a channel?????')
+        .setDescription('Unlock a channel to allow members to send messages.')
         .addChannelOption(option => option
             .setName('channel')
-            .setDescription('Tell me the channel to unlock :)')
-            .setRequired(true)
-            .addChannelTypes(ChannelType.GuildText))
+            .setDescription('The channel to unlock')
+            .addChannelTypes(ChannelType.GuildText)
+            .setRequired(false))
+        .addStringOption(option => option
+            .setName('reason')
+            .setDescription('Reason for unlocking')
+            .setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
     category: 'mod',
 
-    /**
-     * @param {Guild} guild
-     * @param {Interaction} interaction
-     */
+    async execute(interaction) {
+        const channel = interaction.options.getChannel('channel') ?? interaction.channel;
+        const reason = interaction.options.getString('reason') ?? 'No reason provided';
 
-    async execute(interaction, guild) {
+        // check if already unlocked
+        const everyonePerms = channel.permissionOverwrites.cache.get(interaction.guild.id);
+        if (!everyonePerms?.deny.has(PermissionFlagsBits.SendMessages)) {
+            return interaction.reply({ content: '❌ This channel is not locked.', ephemeral: true });
+        }
 
+        await channel.permissionOverwrites.edit(interaction.guild.id, { SendMessages: null });
 
+        const embed = new EmbedBuilder()
+            .setColor('Green')
+            .setTitle('🔓 Channel Unlocked')
+            .addFields(
+                { name: '📢 Channel', value: `${channel}`, inline: true },
+                { name: '📋 Reason', value: reason, inline: true },
+                { name: '🔓 Unlocked By', value: interaction.user.username, inline: true },
+            )
+            .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() })
+            .setTimestamp();
 
-        const channel = interaction.options.getChannel('channel');
-
-        channel.permissionOverwrites.create(interaction.guild.id, { SendMessages: true });
-
-        const lockEmbed = new EmbedBuilder()
-            .setColor(0xf7aa52)
-            .setDescription(`${emoji.success} |  ${channel} has been unlocked `)
-            .setTimestamp()
-            .setFooter({ text: 'Command was used by a staff member', iconURL: interaction.guild.iconURL({ dynamic: true }) })
-        // .setThumbnail(interaction.guild.iconURL({ dyanmic: true }))
-
-        await interaction.reply({ embeds: [lockEmbed] })
-
-    }
-}
+        await interaction.reply({ embeds: [embed] });
+    },
+};

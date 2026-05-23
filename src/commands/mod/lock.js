@@ -1,39 +1,44 @@
-const { SlashCommandBuilder, ChannelType, PermissionFlagsBits, EmbedBuilder, Guild, Interaction } = require('discord.js');
-const { emoji } = require('../../config');
+const { SlashCommandBuilder, ChannelType, PermissionFlagsBits, EmbedBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('lock')
-        .setDescription('Wanna me to lock a channel?????')
+        .setDescription('Lock a channel to prevent members from sending messages.')
         .addChannelOption(option => option
             .setName('channel')
-            .setDescription('Tell me the channel to lock :)')
-            .setRequired(true)
-            .addChannelTypes(ChannelType.GuildText))
+            .setDescription('The channel to lock')
+            .addChannelTypes(ChannelType.GuildText)
+            .setRequired(false))
+        .addStringOption(option => option
+            .setName('reason')
+            .setDescription('Reason for locking')
+            .setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
     category: 'mod',
 
-    /**
-     * @param {Guild} guild
-     * @param {Interaction} interaction
-     */
+    async execute(interaction) {
+        const channel = interaction.options.getChannel('channel') ?? interaction.channel;
+        const reason = interaction.options.getString('reason') ?? 'No reason provided';
 
-    async execute(interaction, guild) {
+        // check if already locked
+        const everyonePerms = channel.permissionOverwrites.cache.get(interaction.guild.id);
+        if (everyonePerms?.deny.has(PermissionFlagsBits.SendMessages)) {
+            return interaction.reply({ content: '❌ This channel is already locked.', flags: MessageFlags.Ephemeral });
+        }
 
+        await channel.permissionOverwrites.edit(interaction.guild.id, { SendMessages: false });
 
+        const embed = new EmbedBuilder()
+            .setColor('Red')
+            .setTitle('🔒 Channel Locked')
+            .addFields(
+                { name: '📢 Channel', value: `${channel}`, inline: true },
+                { name: '📋 Reason', value: reason, inline: true },
+                { name: '🔒 Locked By', value: interaction.user.username, inline: true },
+            )
+            .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() })
+            .setTimestamp();
 
-        const channel = interaction.options.getChannel('channel');
-
-        channel.permissionOverwrites.create(interaction.guild.id, { SendMessages: false });
-
-        const lockEmbed = new EmbedBuilder()
-            .setColor(0xf7aa52)
-            .setDescription(`${emoji.success} |  ${channel} has been locked down`)
-            .setTimestamp()
-            .setFooter({ text: 'Command was used by a staff member', iconURL: interaction.guild.iconURL({ dynamic: true }) })
-        // .setThumbnail(interaction.guild.iconURL({ dyanmic: true }))
-
-        await interaction.reply({ embeds: [lockEmbed] })
-
-    }
-}
+        await interaction.reply({ embeds: [embed] });
+    },
+};

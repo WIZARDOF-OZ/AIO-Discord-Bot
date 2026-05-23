@@ -1,30 +1,38 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const fetch = require("node-fetch");
-const wait = require("node:timers/promises").setTimeout;
-module.exports = {
-    data: new SlashCommandBuilder()
-        .setNSFW(false)
-        .setName("cuddle")
-        .setDescription("Pictures from waifu.pics")
-        .addUserOption(option => option.setName('user_name')
-            .setDescription('User u want to mention')
-            .setRequired(true)),
-    async execute(interaction) {
-        let amount = 1;
-        let user = interaction.options.getUser('user_name')
-        const category = "cuddle";
-        if (interaction.options.getNumber("repeat")) { amount = Number(interaction.options.getNumber("repeat")) }
-        for (let a = 0; a < amount; a++) {
-            let response = await fetch(`https://waifu.pics/api/sfw/${category}`);
-            let data = await response.text();
-            const img = JSON.parse(data);
-            const embed = new EmbedBuilder()
-                .setImage(img.url)
-                .setFooter({ text: `${category} - ${a + 1}/${amount}` })
-                .setColor([160, 32, 240]);
-            try { await interaction.followUp({ content: `${interaction.user.tag} cuddled ${user}`, embeds: [embed] }) }
-            catch { interaction.reply({ content: `${interaction.user.tag} cuddled ${user}`, embeds: [embed] }) }
-            await wait(1000);
-        }
-    }
-}
+// const { SlashCommandBuilder, EmbedBuilder, MessageFlags, } = require('discord.js');
+
+// module.exports = {
+//     data: new SlashCommandBuilder()
+//         .setName('cuddle')
+//         .setDescription('Cuddle someone!')
+//         .addUserOption(option => option
+//             .setName('user')
+//             .setDescription('Who do you want to cuddle?')
+//             .setRequired(true)),
+//     category: 'fun',
+
+//     async execute(interaction) {
+//         const user = interaction.options.getUser('user');
+
+//         let data;
+//         try {
+//             const response = await fetch('https://api.waifu.pics/sfw/cuddle');
+//             if (!response.ok) throw new Error(`API error ${response.status}`);
+//             data = await response.json();
+//         } catch (err) {
+//             console.error('[Cuddle] Fetch failed:', err.message);
+//             return interaction.reply({
+//                 content: '❌ Failed to fetch image, try again later.',
+//                 flags: MessageFlags.Ephemeral,
+//             });
+//         }
+
+//         const embed = new EmbedBuilder()
+//             .setColor('Random')
+//             .setDescription(`🤗 **${interaction.user.username}** cuddled **${user.username}**!`)
+//             .setImage(data.url)
+//             .setFooter({ text: 'waifu.pics', iconURL: interaction.user.displayAvatarURL() })
+//             .setTimestamp();
+
+//         await interaction.reply({ embeds: [embed] });
+//     },
+// };

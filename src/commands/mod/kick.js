@@ -1,39 +1,74 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
-const { owners } = require('../../config.js');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, MessageFlags } = require('discord.js');
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('kick')
-        .setDescription('Select a member to kick.')
-        .addUserOption(option => option.setName('target').setDescription('who is being annoying?').setRequired(true))
-        .addStringOption(option => option.setName('reason').setDescription('and reason').setRequired(false))
+        .setDescription('Kick a member from the server.')
+        .addUserOption(option => option
+            .setName('target')
+            .setDescription('The member to kick')
+            .setRequired(true))
+        .addStringOption(option => option
+            .setName('reason')
+            .setDescription('Reason for the kick')
+            .setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers)
         .setDMPermission(false),
     category: 'mod',
+
     async execute(interaction) {
-        try {
-            const member = interaction.options.getMember('target');
-            const reason = interaction.options.getString('reason') ?? "no reason provided"
-            if (member.id === interaction.user.id) return interaction.reply(';-; you cant do that dude');
-            if (member.id !== owners.user) return interaction.reply(`You can't kick them`)
-            const success = new EmbedBuilder()
-                .setColor(0xf7aa52)
-                .setDescription(`<:p_dot:837257989563744256> User: <@${member.id}> was kicked from the server successfully\n\n <:p_dot:837257989563744256> Reason: \`\`${reason}\`\``);
-            // .addFields(
-            //     { name: "user", value: `<@${member.id}>`, inline: false },
-            //     { name: "reason", value: reason, inline: false }
-            // )
-            const DMembed = new EmbedBuilder()
-                .setColor(0xf7aa52)
-                .setDescription(`<:p_dot:837257989563744256> You have been  kick from the ${interaction.guild.name} server\n\n <:p_dot:837257989563744256> Reason: \`\`${reason}\`\``);
+        const member = interaction.options.getMember('target');
+        const reason = interaction.options.getString('reason') ?? 'No reason provided';
 
-
-            await interaction.guild.members.kick(member);
-            await interaction.reply({ embeds: [success] });
-            await member.send({ embeds: [DMembed] });
-        } catch (error) {
-
-            console.log(error);
-            await interaction.reply(`\`\`\`js\n${error}\`\`\``);
+        //  Validation 
+        if (!member) {
+            return interaction.reply({
+                content: '❌ Could not find that member. They may not be in this server.', flags: MessageFlags.Ephemeral
+            });
         }
-    },
-};
+
+        if (member.id === interaction.user.id) {
+                return interaction.reply({ content: "❌ You can't kick yourself.",  flags: MessageFlags.Ephemeral });
+            }
+
+            if (member.id === interaction.client.user.id) {
+                return interaction.reply({ content: "❌ I can't kick myself.",  flags: MessageFlags.Ephemeral });
+            }
+
+            if (!member.kickable) {
+                return interaction.reply({ content: '❌ I cannot kick this member. They may have a higher role than me.',  flags: MessageFlags.Ephemeral });
+            }
+
+            if (interaction.member.roles.highest.comparePositionTo(member.roles.highest) <= 0) {
+                return interaction.reply({ content: "❌ You can't kick someone with an equal or higher role than you.",  flags: MessageFlags.Ephemeral });
+            }
+
+            //  DM before kick ─
+            const dmEmbed = new EmbedBuilder()
+                .setColor('Orange')
+                .setTitle(`You have been kicked from ${interaction.guild.name}`)
+                .addFields(
+                    { name: '📋 Reason', value: reason, inline: true },
+                    { name: '👢 Kicked By', value: interaction.user.username, inline: true },
+                )
+                .setTimestamp();
+
+            await member.send({ embeds: [dmEmbed] }).catch(() => null);
+
+
+            await member.kick(reason);
+
+            const successEmbed = new EmbedBuilder()
+                .setColor('Orange')
+                .setTitle('👢 Member Kicked')
+                .addFields(
+                    { name: '👤 User', value: `${member.user.username} (<@${member.id}>)`, inline: true },
+                    { name: '📋 Reason', value: reason, inline: true },
+                    { name: '👢 Kicked By', value: interaction.user.username, inline: true },
+                )
+                .setThumbnail(member.user.displayAvatarURL())
+                .setTimestamp();
+
+            await interaction.reply({ embeds: [successEmbed] });
+        },
+    };
