@@ -20,21 +20,28 @@ const aio = new Client({
 });
 
 const { token } = require('./config.js');
-
+const connectDB = require('./utils/database.js')
 
 // Defining the global Collection
 aio.commands = new Collection();
 aio.cooldowns = new Collection();
 aio.prefix_cmds = new Collection();
 
+
 // Handlers
 const commandHandler = require('./handlers/commandHandler');
 const eventHandler = require('./handlers/eventHandler');
 
 // Load Handlers
-commandHandler(aio);
-eventHandler(aio);
-
+(async () => {
+    await connectDB();
+    commandHandler(aio);
+    eventHandler(aio);
+    aio.login(token).catch(err => {
+        console.error('[Login Failed]', err);
+        process.exit(1);
+    });
+})();
 aio.on('shardError', error => console.log(' [SHARD ERROR] ', error));
 process.on('unhandledRejection', error => console.log(' [UNHANDLED REJECTION] ', error));
 process.on('uncaughtException', error => console.log(' [UNCAUGHT EXCEPTION] ', error));
