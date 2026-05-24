@@ -1,142 +1,225 @@
-<!-- <p align="center">
-  <a href="" rel="noopener">
- <img width=200px height=200px src="https://i.imgur.com/FxL5qM0.jpg" alt="Bot logo"></a>
-</p>
+# AIO-Bot
 
-<h3 align="center">a-perfect-discord-bot</h3>
-
-<div align="center">
-
-[![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![Platform](https://img.shields.io/badge/platform-reddit-orange.svg)](https://www.reddit.com/user/Wordbook_Bot)
-[![GitHub Issues](https://img.shields.io/github/issues/kylelobo/The-Documentation-Compendium.svg)](https://github.com/kylelobo/The-Documentation-Compendium/issues)
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/kylelobo/The-Documentation-Compendium.svg)](https://github.com/kylelobo/The-Documentation-Compendium/pulls)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
-
-</div>
+AIO-Bot is a modern Discord utility bot built with Discord.js v14. It includes moderation, information, entertainment, and owner tools in a clean command structure, supporting both slash commands and classic prefix commands.
 
 ---
 
-<p align="center"> 🤖 Few lines describing what your bot does.
-    <br>
-</p>
+## 🚀 What This Bot Does
 
-## 📝 Table of Contents
+AIO-Bot is designed to help Discord servers with:
 
-- [About](#about)
-- [Demo / Working](#demo)
-- [How it works](#working)
-- [Usage](#usage)
-- [Getting Started](#getting_started)
-- [Deploying your own bot](#deployment)
-- [Built Using](#built_using)
-- [TODO](../TODO.md)
-- [Contributing](../CONTRIBUTING.md)
-- [Authors](#authors)
-- [Acknowledgments](#acknowledgement)
-
-## 🧐 About <a name = "about"></a>
-
-Write about 1-2 paragraphs describing the purpose of your bot.
-
-## 🎥 Demo / Working <a name = "demo"></a>
-
-![Working](https://media.giphy.com/media/20NLMBm0BkUOwNljwv/giphy.gif)
-
-## 💭 How it works <a name = "working"></a>
-
-The bot first extracts the word from the comment and then fetches word definitions, part of speech, example and source from the Oxford Dictionary API.
-
-If the word does not exist in the Oxford Dictionary, the Oxford API then returns a 404 response upon which the bot then tries to fetch results form the Urban Dictionary API.
-
-The bot uses the Pushshift API to fetch comments, PRAW module to reply to comments and Heroku as a server.
-
-The entire bot is written in Python 3.6
-
-## 🎈 Usage <a name = "usage"></a>
-
-To use the bot, type:
-
-```
-!dict word
-```
-
-The first part, i.e. "!dict" **is not** case sensitive.
-
-The bot will then give you the Oxford Dictionary (or Urban Dictionary; if the word does not exist in the Oxford Dictionary) definition of the word as a comment reply.
-
-### Example:
-
-> !dict what is love
-
-**Definition:**
-
-Baby, dont hurt me~
-Dont hurt me~ no more.
-
-**Example:**
-
-Dude1: Bruh, what is love?
-Dude2: Baby, dont hurt me, dont hurt me- no more!
-Dude1: dafuq?
-
-**Source:** https://www.urbandictionary.com/define.php?term=what%20is%20love
+- Moderation commands for managing users, channels, and warnings
+- Informational commands for server, user, and role details
+- Fun commands like memes, jokes, dice rolls, and avatar lookups
+- Owner-only utilities for bot status, command reloads, and diagnostics
+- A responsive prefix system with support for `=` commands and bot mentions
 
 ---
 
-<sup>Beep boop. I am a bot. If there are any issues, contact my [Master](https://www.reddit.com/message/compose/?to=PositivePlayer1&subject=/u/Wordbook_Bot)</sup>
+## ✨ Features
 
-<sup>Want to make a similar reddit bot? Check out: [GitHub](https://github.com/kylelobo/Reddit-Bot)</sup>
+- Slash command architecture with category-based routing
+- Prefix command support using `=` or by mentioning the bot
+- Modular command loader for easy extension
+- MongoDB support via `mongoose` for warning storage and state
+- Interactive bot help menu with category selection
+- Owner-only controls and command reload support
+- Server logging for welcome joins, ban/unban events, channel updates, and role changes
 
-## 🏁 Getting Started <a name = "getting_started"></a>
+---
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
+## 🧭 Command Overview
 
-### Prerequisites
+### Slash Commands
 
-What things you need to install the software and how to install them.
+#### Info
 
+- `/help` — display the command list and category browser
+- `/userinfo` — show member profile details
+- `/serverinfo` — show server statistics and settings
+- `/roleinfo` — show role properties and permissions
+
+#### Fun
+
+- `/avatar` — get a user avatar
+- `/coinflip` — flip one or more coins
+- `/fact` — fetch a random fact
+- `/joke` — fetch a random joke
+- `/meme` — fetch a random meme
+- `/ping` — check bot latency
+- `/roll` — roll dice and return results
+- `/say` — make the bot repeat a message
+
+#### Moderation
+
+- `/ban` — ban a user from the server
+- `/kick` — kick a user from the server
+- `/timeout` — timeout a member
+- `/lock` — lock a channel
+- `/unlock` — unlock a channel
+- `/slowmode` — set channel slowmode
+- `/warn` — add a warning to a user
+- `/warnings` — view user warnings
+- `/clearwarnings` — remove warnings for a user
+- `/unban` — lift a ban
+
+#### Owner
+
+- `/botinfo` — show bot uptime, ping, memory, and counts
+- `/eval` — evaluate JavaScript code (owner only)
+- `/reload` — reload a slash command without restarting
+- `/setstatus` — change bot presence and status
+
+#### Utility
+
+- `/testbutton` — demonstrate button interaction handling
+
+### Prefix Commands
+
+AIO-Bot also supports classic prefix commands using `=` or bot mention.
+
+#### Fun Prefix Commands
+
+- `=ping`
+- `=status`
+- `=avatar`
+- `=8ball`
+- `=howgay`
+- `=emojify`
+- `=firstmessage`
+
+#### Moderation Prefix Commands
+
+- `=purge`
+- `=slowmode`
+
+#### Developer Prefix Commands
+
+- `=reload`
+
+---
+
+## 📌 Event Support
+
+AIO-Bot reacts to the following Discord events:
+
+- `ready` — bot startup and presence initialization
+- `interactionCreate` — slash command execution
+- `messageCreate` — prefix command handling
+- `messageDelete` — deleted message logging
+- `messageUpdate` — edited message logging
+- `channelCreate` — channel creation notifications
+- `channelDelete` — channel deletion notifications
+- `roleCreate` — role creation notifications
+- `roleDelete` — role deletion notifications
+- `guildMemberAdd` — welcome messages for new members
+- `guildBanAdd` — ban log notifications
+- `guildBanRemove` — unban log notifications
+
+---
+
+## 🛠️ Installation
+
+### Requirements
+
+- Node.js 18 or newer
+- npm
+- Discord bot application with token
+- MongoDB database for warning storage
+
+### Setup
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/WIZARDOF-OZ/AIO-Discord-Bot.git
+cd AIO-Bot
 ```
-Give examples
+
+2. Install dependencies:
+
+```bash
+npm install
 ```
 
-### Installing
+3. Create a `.env` file at the project root with:
 
-A step by step series of examples that tell you how to get a development env running.
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
+```env
+TOKEN=your-discord-bot-token
+MONGO_URI=your-mongodb-connection-string
+guildID=your-test-guild-id
+client_id=your-application-client-id
 ```
 
-End with an example of getting some data out of the system or using it for a little demo.
+4. Update `src/config.js` with your bot owners and optional prefix settings.
 
-<!-- ## 🚀 Deploying your own bot <a name = "deployment"></a>
+5. Register slash commands for your guild:
 
-To see an example project on how to deploy your bot, please see my own configuration:
+```bash
+npm run cmd
+```
 
-- **Heroku**: https://github.com/kylelobo/Reddit-Bot#deploying_the_bot
+6. Start the bot:
 
-## ⛏️ Built Using <a name = "built_using"></a>
+```bash
+npm run start
+```
 
-- [PRAW](https://praw.readthedocs.io/en/latest/) - Python Reddit API Wrapper
-- [Heroku](https://www.heroku.com/) - SaaS hosting platform -->
+For development with auto-reload:
 
-## ✍️ Authors <a name = "authors"></a>
+```bash
+npm run dev
+```
 
-- [@WIZARDOF-OZ](https://github.com/WIZARDOF-OZ) - Idea & Initial work
+---
 
-<!-- See also the list of [contributors](https://github.com/kylelobo/The-Documentation-Compendium/contributors) who participated in this project. -->
+## ⚙️ Configuration
 
-## 🎉 Acknowledgements <a name = "acknowledgement"></a>
+The bot uses `src/config.js` for these values:
 
-- Hat tip to anyone whose code was used
-- Inspiration
-- References
+- `token` — Discord bot token
+- `owners` — bot owner IDs for owner-only commands
+- `prefix` — prefix for classic commands (`=` by default)
+- `dev.guild` — development guild IDs used for debugging or deployments
+
+The `.env` file is required for `TOKEN`, `MONGO_URI`, `client_id`, and `guildID`.
+
+---
+
+## 📚 Technologies Used
+
+- Node.js
+- Discord.js v14
+- MongoDB / Mongoose
+- quick.db
+- dotenv
+- express
+- canvacord
+- superagent
+- akaneko
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome. If you want to add commands, improve moderation handling, or extend the bot's feature set:
+
+1. Fork the repository
+2. Create a branch for your changes
+3. Submit a pull request with a clear description
+
+Please keep command logic modular and follow the existing folder structure.
+
+---
+
+## 🙌 Author
+
+- **WizardOF-Oz** — project creator
+
+---
+
+## 📌 Notes
+
+- Slash commands are deployed to a specific guild via `src/handlers/deploy-slashcommands.js`.
+- NSFW command placeholders exist in the `src/commands/nsfw` folder but are currently disabled.
+- Use `=help` or `/help` to explore available functionality in any server.
