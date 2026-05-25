@@ -1,28 +1,28 @@
-// const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
-// module.exports = {
-//     data: new SlashCommandBuilder()
-//         .setName('kiss')
-//         .setDescription('Kiss someone!')
-//         .addUserOption(option => option
-//             .setName('user')
-//             .setDescription('Who do you want to kiss?')
-//             .setRequired(true)),
-//     category: 'fun',
+module.exports = {
+    data: new SlashCommandBuilder()
+        .setName('kill')
+        .setDescription('Kill someone... virtually')
+        .addUserOption(option => option
+            .setName('user')
+            .setDescription('Who do you want to kill?')
+            .setRequired(true)),
+    category: 'fun',
 
-//     async execute(interaction) {
-//         const user = interaction.options.getUser('user');
+    async execute(interaction) {
+        const user = interaction.options.getUser('user');
 
-//         const response = await fetch('https://api.waifu.pics/sfw/kill');
-//         const data = await response.json();
+        const response = await fetch('https://nekos.best/api/v2/kill');
+        const data = await response.json();
 
-//         const embed = new EmbedBuilder()
-//             .setColor('Random')
-//             .setDescription(`💋 **${interaction.user.username}** kissed **${user.username}**!`)
-//             .setImage(data.url)
-//             .setFooter({ text: 'waifu.pics', iconURL: interaction.user.displayAvatarURL() })
-//             .setTimestamp();
+        const embed = new EmbedBuilder()
+            .setColor('DarkRed')
+            .setDescription(`💀 **${interaction.user.username}** killed **${user.username}**!`)
+            .setImage(data.url)
+            .setFooter({ text: 'waifu.pics', iconURL: interaction.user.displayAvatarURL() })
+            .setTimestamp();
 
-//         await interaction.reply({ embeds: [embed] });
-//     },
-// };
+        await interaction.reply({ embeds: [embed] });
+    },
+};
