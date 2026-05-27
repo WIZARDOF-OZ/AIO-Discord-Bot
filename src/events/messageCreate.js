@@ -1,5 +1,6 @@
 const { Events, EmbedBuilder, Collection, ChannelType } = require('discord.js');
 const { prefix, emoji, color, owners } = require('../config.js');
+const { handleAutomod } = require('../automod/index.js')
 module.exports = {
     name: Events.MessageCreate,
     /**
@@ -7,6 +8,7 @@ module.exports = {
      * @param {Message} message 
      */
     async execute(message, aio) {
+        await handleAutomod(message, aio);
         if (message.author.bot) return;
         if (!message.guild) return;
 

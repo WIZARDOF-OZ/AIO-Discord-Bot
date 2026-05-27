@@ -15,4 +15,4 @@ const warningSchema = new mongoose.Schema({
 // index for faster queries
 warningSchema.index({ guildId: 1, userId: 1 });
 
-module.exports = mongoose.model('Warning', warningSchema);
+module.exports = mongoose.models.Warning || mongoose.model('Warning', warningSchema);
