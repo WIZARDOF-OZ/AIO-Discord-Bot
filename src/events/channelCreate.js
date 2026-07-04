@@ -18,7 +18,7 @@ module.exports = {
         try {
 
             if (!channel.guild)
-                return;
+                {return;}
 
             const guild =
                 channel.guild;
@@ -29,7 +29,7 @@ module.exports = {
                 );
 
             if (!logChannel)
-                return;
+                {return;}
 
             const auditData =
                 await audit.get(

@@ -10,10 +10,10 @@ module.exports = {
 
     async execute(member, client) {
         const { guild } = member;
-        const target = config.find(x => x.guildId == guild.id);
-        if (!target) return;
+        const target = config.find(x => x.guildId === guild.id);
+        if (!target) {return;}
         const channel = await guild.channels.cache.get(target.channelId);
-        if (!channel) return;
+        if (!channel) {return;}
 
         const value = [
             `<:p_dot:837257989563744256> ${member.displayName}, Just Join Our Server!`,

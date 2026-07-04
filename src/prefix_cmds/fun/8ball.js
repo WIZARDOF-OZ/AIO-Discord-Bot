@@ -9,7 +9,6 @@ module.exports = {
     args: true,
     cooldown: 3,
     category: "fun",
-    usage: "8ball",
 
     async execute(aio, message, args) {
         const question = args.join(" ");

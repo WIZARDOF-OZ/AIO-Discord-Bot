@@ -10,7 +10,7 @@ module.exports = {
         await interaction.deferReply();
         try {
             const response = await fetch('https://nekos.best/api/v2/cry');
-            if (!response.ok) throw new Error(`API error ${response.status}`);
+            if (!response.ok) {throw new Error(`API error ${response.status}`);}
             const data = await response.json();
 
             const embed = new EmbedBuilder()

@@ -81,7 +81,7 @@ module.exports = {
         const categories = {};
         for (const command of client.commands.values()) {
             const category = command.category ?? 'other';
-            if (!categories[category]) categories[category] = [];
+            if (!categories[category]) {categories[category] = [];}
             categories[category].push(command);
         }
 

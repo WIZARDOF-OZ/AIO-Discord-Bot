@@ -28,7 +28,7 @@ module.exports = {
         console.log('args[0]:', args[0]);
 
         if (!member) {
-            return message.reply(`${emoji.error} No user found, please mention them or provide a valid user ID.`);
+            return message.reply(`❌ No user found, please mention them or provide a valid user ID.`);
         }
 
         const user = member.user;

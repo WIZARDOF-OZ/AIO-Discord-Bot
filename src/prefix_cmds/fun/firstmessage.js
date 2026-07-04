@@ -14,7 +14,7 @@ module.exports = {
             limit: 1,
         });
         const msg = fetchMessages.first();
-        if (!msg) return message.reply("Couldn't find any messages in this channel.")
+        if (!msg) {return message.reply("Couldn't find any messages in this channel.")}
         const firstEmbed = new EmbedBuilder()
             .setTitle(`First Message in ${message.guild.name}`)
             .setURL(msg.url)

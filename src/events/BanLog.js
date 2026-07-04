@@ -31,7 +31,7 @@ module.exports = {
                 );
 
             if (!logChannel)
-                return;
+                {return;}
 
             const auditData =
                 await audit.get(

@@ -163,8 +163,8 @@ module.exports = {
 
         // listen for modal submits on the client
         const interactionListerner = async (i) => {
-            if (i.user.id !== interaction.user.id) return;
-            if (!i.guild || i.guild.id !== guild.id) return;
+            if (i.user.id !== interaction.user.id) {return;}
+            if (!i.guild || i.guild.id !== guild.id) {return;}
 
             const id = i.customId;
 
@@ -194,7 +194,7 @@ module.exports = {
                 }).catch(() => null);
             }
 
-            if (!i.isModalSubmit()) return;
+            if (!i.isModalSubmit()) {return;}
 
             // defer IMMEDIATELY before any async operations
             await i.deferReply({ flags: MessageFlags.Ephemeral });
@@ -263,7 +263,7 @@ module.exports = {
                 const action = parts.pop();
                 const moduleKey = parts.join('_');
 
-                if (!settings[moduleKey]) return i.editReply({ content: '❌ Unknown module.' });
+                if (!settings[moduleKey]) {return i.editReply({ content: '❌ Unknown module.' });}
 
                 settings[moduleKey].action = action;
 

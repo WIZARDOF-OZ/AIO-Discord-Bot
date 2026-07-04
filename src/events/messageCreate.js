@@ -9,8 +9,8 @@ module.exports = {
      */
     async execute(message, aio) {
         await handleAutomod(message, aio);
-        if (message.author.bot) return;
-        if (!message.guild) return;
+        if (message.author.bot) {return;}
+        if (!message.guild) {return;}
 
         // Prefix checkinng
         const mentionRegex = new RegExp(`^<@!?${aio.user.id}>\\s`);
@@ -28,11 +28,11 @@ module.exports = {
         // parse args
         const args = message.content.slice(usedPrefix.length).trim().split(/ +/);
         const commandName = args.shift().toLowerCase();
-        if (!commandName) return;
+        if (!commandName) {return;}
 
         // Find the command
         const command = aio.prefix_cmds.get(commandName) || aio.prefix_cmds.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-        if (!command) return message.react('<:woot:1124216085407866911>');
+        if (!command) {return message.react('<:woot:1124216085407866911>');}
 
 
         // Guild only check

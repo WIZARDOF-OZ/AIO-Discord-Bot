@@ -10,8 +10,8 @@ module.exports = (message, settings) => {
     const { blockInvites, blockExternal } = settings;
     const content = message.content;
 
-    if (blockInvites && inviteRegex.test(content)) return true;
-    if (blockExternal && externalRegex.test(content)) return true;
+    if (blockInvites && inviteRegex.test(content)) {return true;}
+    if (blockExternal && externalRegex.test(content)) {return true;}
 
     return false;
 };

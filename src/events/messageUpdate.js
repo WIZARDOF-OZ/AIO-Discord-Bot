@@ -27,12 +27,12 @@ module.exports = {
             if (
                 !oldMessage.guild ||
                 oldMessage.author.bot
-            ) return;
+            ) {return;}
 
             if (
                 oldMessage.content ===
                 newMessage.content
-            ) return;
+            ) {return;}
 
             const channelId =
                 "860060454407766036";
@@ -42,7 +42,7 @@ module.exports = {
                     channelId
                 );
 
-            if (!modChannel) return;
+            if (!modChannel) {return;}
 
             const embed =
                 new EmbedBuilder()

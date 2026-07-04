@@ -28,7 +28,7 @@ module.exports = {
             let result = eval(code);
 
             // handle promises
-            if (result instanceof Promise) result = await result;
+            if (result instanceof Promise) {result = await result;}
 
             // convert to string
             let output = typeof result === 'object'
@@ -39,7 +39,7 @@ module.exports = {
             output = output.replaceAll(process.env.TOKEN, '[TOKEN REDACTED]');
 
             // truncate if too long
-            if (output.length > 1900) output = output.slice(0, 1900) + '...';
+            if (output.length > 1900) {output = output.slice(0, 1900) + '...';}
 
             const embed = new EmbedBuilder()
                 .setColor('Green')

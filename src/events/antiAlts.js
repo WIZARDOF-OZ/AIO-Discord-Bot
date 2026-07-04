@@ -5,10 +5,10 @@ module.exports = {
     name: Events.GuildMemberAdd,
 
     async execute(member, client) {
-        if (!member.guild) return;
+        if (!member.guild) {return;}
 
         const settings = await AutomodSettings.findOne({ guildId: member.guild.id });
-        if (!settings?.enabled) return;
+        if (!settings?.enabled) {return;}
 
         const accountAge = Date.now() - member.user.createdTimestamp;
         const accountAgeDays = Math.floor(accountAge / (1000 * 60 * 60 * 24));

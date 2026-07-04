@@ -17,9 +17,9 @@ module.exports = {
 
 
 
-        if (isNaN(amount)) return message.reply(`${emoji.error} Please provide a valid number.`);
-        if (amount < 1) return message.reply(`${emoji.error} You need to delete at least 1 message.`);
-        if (amount > 100) return message.reply(`${emoji.error} You can only delete up to 100 messages at a time.`);
+        if (isNaN(amount)) {return message.reply(`${emoji.error} Please provide a valid number.`);}
+        if (amount < 1) {return message.reply(`${emoji.error} You need to delete at least 1 message.`);}
+        if (amount > 100) {return message.reply(`${emoji.error} You can only delete up to 100 messages at a time.`);}
 
         await message.delete().catch(() => null);
 
@@ -31,14 +31,14 @@ module.exports = {
 
         });
 
-        if (!deletable.size) return message.reply(`${emoji.error} | No messages to delete! Messages older than 14 days cannot be deleted!`);
+        if (!deletable.size) {return message.reply(`${emoji.error} | No messages to delete! Messages older than 14 days cannot be deleted!`);}
 
         const deleted = await message.channel.bulkDelete(deletable, true).catch(err => {
             console.log(' [Purge Error]', err);
             return null;
         });
 
-        if (!deleted) return message.channel.send(`${emoji.error} Something went wrong while deleting messages.`);
+        if (!deleted) {return message.channel.send(`${emoji.error} Something went wrong while deleting messages.`);}
         const embed = new EmbedBuilder()
             .setColor(color.success)
             .setDescription(`${emoji.success} Deleted **${deleted.size}** message(s) in ${message.channel}.`)

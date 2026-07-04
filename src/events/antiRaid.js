@@ -9,17 +9,17 @@ module.exports = {
     name: Events.GuildMemberAdd,
 
     async execute(member, client) {
-        if (!member.guild) return;
+        if (!member.guild) {return;}
 
         const settings = await AutomodSettings.findOne({ guildId: member.guild.id });
-        if (!settings?.enabled || !settings?.antiRaid?.enabled) return;
+        if (!settings?.enabled || !settings?.antiRaid?.enabled) {return;}
 
         const { threshold, interval, action, lockChannels, raiseVerification, lockDuration } = settings.antiRaid;
         const guildId = member.guild.id;
         const now = Date.now();
 
         // track joins
-        if (!raidMap.has(guildId)) raidMap.set(guildId, []);
+        if (!raidMap.has(guildId)) {raidMap.set(guildId, []);}
         const joins = raidMap.get(guildId);
 
         // filter joins within interval window
@@ -32,12 +32,12 @@ module.exports = {
         setTimeout(() => {
             const current = raidMap.get(guildId) ?? [];
             const cleaned = current.filter(t => t > Date.now() - interval * 1000);
-            if (cleaned.length === 0) raidMap.delete(guildId);
-            else raidMap.set(guildId, cleaned);
+            if (cleaned.length === 0) {raidMap.delete(guildId);}
+            else {raidMap.set(guildId, cleaned);}
         }, interval * 1000);
 
         // not a raid yet
-        if (recentJoins.length < threshold) return;
+        if (recentJoins.length < threshold) {return;}
 
         console.warn(`[AutoMod] Raid detected in ${member.guild.name} — ${recentJoins.length} joins in ${interval}s`);
 
@@ -54,8 +54,8 @@ module.exports = {
 
         // action each raider
         for (const raider of raiders) {
-            if (raider.user.bot) continue;
-            if (!raider.kickable) continue;
+            if (raider.user.bot) {continue;}
+            if (!raider.kickable) {continue;}
 
             if (action === 'ban') {
                 await raider.ban({ reason: '[AutoMod] Anti-Raid triggered' }).catch(() => null);

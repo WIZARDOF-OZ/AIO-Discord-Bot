@@ -41,7 +41,7 @@ module.exports = {
         // Turn off slowmode
 
         if (args[0].toLowerCase() === 'off') {
-            if (currentCooldown === 0) return message.reply("Slowmode is already off!");
+            if (currentCooldown === 0) {return message.reply("Slowmode is already off!");}
 
             await message.channel.setRateLimitPerUser(0, reason);
             return message.reply(

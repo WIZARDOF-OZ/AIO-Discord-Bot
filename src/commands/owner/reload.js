@@ -37,7 +37,7 @@ module.exports = {
 
         for (const folder of fs.readdirSync(commandsPath)) {
             const folderPath = path.join(commandsPath, folder);
-            if (!fs.statSync(folderPath).isDirectory()) continue;
+            if (!fs.statSync(folderPath).isDirectory()) {continue;}
 
             for (const file of fs.readdirSync(folderPath).filter(f => f.endsWith('.js'))) {
                 if (file === `${commandName}.js`) {

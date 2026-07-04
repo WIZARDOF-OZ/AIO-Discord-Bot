@@ -16,7 +16,7 @@ module.exports = {
         let data;
         try {
             const response = await fetch('https://nekos.best/api/v2/cuddle');
-            if (!response.ok) throw new Error(`API error ${response.status}`);
+            if (!response.ok) {throw new Error(`API error ${response.status}`);}
             data = await response.json();
         } catch (err) {
             console.error('[Cuddle] Fetch failed:', err.message);

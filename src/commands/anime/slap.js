@@ -18,7 +18,7 @@ module.exports = {
 
         try {
             const response = await fetch('https://nekos.best/api/v2/slap');
-            if (!response.ok) throw new Error(`API error ${response.status}`);
+            if (!response.ok) {throw new Error(`API error ${response.status}`);}
             const data = await response.json();
 
             const result = data.results[0]; // nekos.best returns { results: [...] }

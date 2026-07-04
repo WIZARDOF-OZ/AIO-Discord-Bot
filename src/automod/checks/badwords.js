@@ -5,7 +5,7 @@
  */
 module.exports = (message, settings) => {
     const { words, matchType } = settings;
-    if (!words.length) return false;
+    if (!words.length) {return false;}
 
     const content = message.content.toLowerCase();
 

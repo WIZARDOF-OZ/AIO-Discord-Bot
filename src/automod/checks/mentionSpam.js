@@ -12,7 +12,7 @@ module.exports = (message, settings) => {
     const now = Date.now();
     const mentions = message.mentions.users.size + message.mentions.roles.size;
 
-    if (mentions === 0) return false;
+    if (mentions === 0) {return false;}
 
     if (!mentionMap.has(key)) {
         mentionMap.set(key, { count: 0, resetAt: now + interval * 1000 });

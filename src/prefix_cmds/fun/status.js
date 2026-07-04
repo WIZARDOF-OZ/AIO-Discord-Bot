@@ -14,7 +14,7 @@ module.exports = {
             ?? (args[0] ? await message.guild.members.fetch(args[0]).catch(() => null) : null)
             ?? message.member;
 
-        if (!member) return message.reply('❌ Could not find that user, please mention them or provide a valid ID.');
+        if (!member) {return message.reply('❌ Could not find that user, please mention them or provide a valid ID.');}
 
         const { presence } = member;
 

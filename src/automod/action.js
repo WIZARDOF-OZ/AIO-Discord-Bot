@@ -95,7 +95,7 @@ module.exports = async ({
     // log to mod channel
     if (logChannelId) {
         const logChannel = guild.channels.cache.get(logChannelId);
-        if (!logChannel) return;
+        if (!logChannel) {return;}
 
         const logEmbed = new EmbedBuilder()
             .setColor('Orange')

@@ -9,7 +9,7 @@ module.exports = (aio) => {
 
     for (const folder of fs.readdirSync(commandsPath)) {
         const folderPath = path.join(commandsPath, folder);
-        if (!fs.statSync(folderPath).isDirectory()) continue;
+        if (!fs.statSync(folderPath).isDirectory()) {continue;}
 
         for (const file of fs.readdirSync(folderPath).filter(f => f.endsWith('.js'))) {
             const command = require(path.join(folderPath, file));
@@ -28,7 +28,7 @@ module.exports = (aio) => {
 
     for (const folder of fs.readdirSync(prefixPath)) {
         const folderPath = path.join(prefixPath, folder);
-        if (!fs.statSync(folderPath).isDirectory()) continue;
+        if (!fs.statSync(folderPath).isDirectory()) {continue;}
 
         for (const file of fs.readdirSync(folderPath).filter(f => f.endsWith('.js'))) {
             const command = require(path.join(folderPath, file));

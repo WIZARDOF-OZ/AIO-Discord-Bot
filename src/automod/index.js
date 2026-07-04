@@ -15,10 +15,10 @@ const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 async function getSettings(guildId) {
     const cached = settingsCache.get(guildId);
-    if (cached && Date.now() < cached.expiresAt) return cached.data;
+    if (cached && Date.now() < cached.expiresAt) {return cached.data;}
 
     const settings = await AutomodSettings.findOne({ guildId });
-    if (!settings) return null;
+    if (!settings) {return null;}
 
     settingsCache.set(guildId, {
         data: settings,
@@ -38,23 +38,23 @@ function invalidateCache(guildId) {
  * @param {import('discord.js').Message} message
  */
 async function handleAutomod(message) {
-    if (!message.guild) return;
-    if (message.author.bot) return;
-    if (!message.member) return;
+    if (!message.guild) {return;}
+    if (message.author.bot) {return;}
+    if (!message.member) {return;}
 
     const settings = await getSettings(message.guild.id);
-    if (!settings || !settings.enabled) return;
+    if (!settings || !settings.enabled) {return;}
 
     // bypass roles check
     if (settings.bypassRoles.length) {
         const hasBypass = settings.bypassRoles.some(roleId =>
             message.member.roles.cache.has(roleId)
         );
-        if (hasBypass) return;
+        if (hasBypass) {return;}
     }
 
     // ignored channels check
-    if (settings.ignoredChannels.includes(message.channel.id)) return;
+    if (settings.ignoredChannels.includes(message.channel.id)) {return;}
 
     const logChannelId = settings.logChannel;
 
@@ -119,7 +119,7 @@ async function handleAutomod(message) {
     ];
 
     for (const check of checks) {
-        if (!check.enabled || !check.triggered) continue;
+        if (!check.enabled || !check.triggered) {continue;}
 
         await executeAction({
             member: message.member,

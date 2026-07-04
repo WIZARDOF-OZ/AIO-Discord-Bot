@@ -30,10 +30,10 @@ module.exports = {
 
         const emojified = `${args.join(' ')}`.toLowerCase().split('').map(letter => {
             if (/[a-z]/g.test(letter))
-                return `:regional_indicator_${letter}: `;
+                {return `:regional_indicator_${letter}: `;}
 
             if (specialChars[letter])
-                return `${specialChars[letter]} `;
+                {return `${specialChars[letter]} `;}
 
             return letter;
         }).join('');
