@@ -1,225 +1,175 @@
-# AIO-Bot
+<div align="center">
+  <h1>AIO-Bot</h1>
+  <p><strong>A comprehensive, high-performance Discord utility bot built with Discord.js v14.</strong></p>
 
-AIO-Bot is a modern Discord utility bot built with Discord.js v14. It includes moderation, information, entertainment, and owner tools in a clean command structure, supporting both slash commands and classic prefix commands.
+  <p>
+    <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-18.x-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js"></a>
+    <a href="https://discord.js.org/"><img src="https://img.shields.io/badge/Discord.js-v14-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord.js"></a>
+    <a href="https://www.mongodb.com/"><img src="https://img.shields.io/badge/MongoDB-Enabled-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB"></a>
+    <a href="https://eslint.org/"><img src="https://img.shields.io/badge/ESLint-Configured-4B32C3?style=for-the-badge&logo=eslint&logoColor=white" alt="ESLint"></a>
+    <a href="https://github.com/WIZARDOF-OZ/AIO-Discord-Bot/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-F7DF1E?style=for-the-badge&logoColor=black" alt="License"></a>
+  </p>
+</div>
 
----
-
-## 🚀 What This Bot Does
-
-AIO-Bot is designed to help Discord servers with:
-
-- Moderation commands for managing users, channels, and warnings
-- Informational commands for server, user, and role details
-- Fun commands like memes, jokes, dice rolls, and avatar lookups
-- Owner-only utilities for bot status, command reloads, and diagnostics
-- A responsive prefix system with support for `=` commands and bot mentions
-
----
-
-## ✨ Features
-
-- Slash command architecture with category-based routing
-- Prefix command support using `=` or by mentioning the bot
-- Modular command loader for easy extension
-- MongoDB support via `mongoose` for warning storage and state
-- Interactive bot help menu with category selection
-- Owner-only controls and command reload support
-- Server logging for welcome joins, ban/unban events, channel updates, and role changes
+## Table of Contents
+- [About the Project](#about-the-project)
+- [Core Features](#core-features)
+- [Architecture & Tech Stack](#architecture--tech-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Configuration](#configuration)
+- [Command Reference](#command-reference)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
-## 🧭 Command Overview
+## About the Project
 
-### Slash Commands
+**AIO-Bot** is an all-in-one Discord application designed to streamline server management and enhance user engagement. Built on the modern Discord.js v14 framework, it provides a robust suite of tools encompassing moderation, detailed server telemetry, entertainment features, and developer utilities. 
 
-#### Info
-
-- `/help` — display the command list and category browser
-- `/userinfo` — show member profile details
-- `/serverinfo` — show server statistics and settings
-- `/roleinfo` — show role properties and permissions
-
-#### Fun
-
-- `/avatar` — get a user avatar
-- `/coinflip` — flip one or more coins
-- `/fact` — fetch a random fact
-- `/joke` — fetch a random joke
-- `/meme` — fetch a random meme
-- `/ping` — check bot latency
-- `/roll` — roll dice and return results
-- `/say` — make the bot repeat a message
-
-#### Moderation
-
-- `/ban` — ban a user from the server
-- `/kick` — kick a user from the server
-- `/timeout` — timeout a member
-- `/lock` — lock a channel
-- `/unlock` — unlock a channel
-- `/slowmode` — set channel slowmode
-- `/warn` — add a warning to a user
-- `/warnings` — view user warnings
-- `/clearwarnings` — remove warnings for a user
-- `/unban` — lift a ban
-
-#### Owner
-
-- `/botinfo` — show bot uptime, ping, memory, and counts
-- `/eval` — evaluate JavaScript code (owner only)
-- `/reload` — reload a slash command without restarting
-- `/setstatus` — change bot presence and status
-
-#### Utility
-
-- `/testbutton` — demonstrate button interaction handling
-
-### Prefix Commands
-
-AIO-Bot also supports classic prefix commands using `=` or bot mention.
-
-#### Fun Prefix Commands
-
-- `=ping`
-- `=status`
-- `=avatar`
-- `=8ball`
-- `=howgay`
-- `=emojify`
-- `=firstmessage`
-
-#### Moderation Prefix Commands
-
-- `=purge`
-- `=slowmode`
-
-#### Developer Prefix Commands
-
-- `=reload`
+Whether utilizing Discord's modern Application Commands (Slash Commands) or traditional Prefix Commands, AIO-Bot delivers a highly responsive and modular experience.
 
 ---
 
-## 📌 Event Support
+## Core Features
 
-AIO-Bot reacts to the following Discord events:
-
-- `ready` — bot startup and presence initialization
-- `interactionCreate` — slash command execution
-- `messageCreate` — prefix command handling
-- `messageDelete` — deleted message logging
-- `messageUpdate` — edited message logging
-- `channelCreate` — channel creation notifications
-- `channelDelete` — channel deletion notifications
-- `roleCreate` — role creation notifications
-- `roleDelete` — role deletion notifications
-- `guildMemberAdd` — welcome messages for new members
-- `guildBanAdd` — ban log notifications
-- `guildBanRemove` — unban log notifications
+- **Hybrid Command Infrastructure:** Seamlessly supports both Slash Commands (`/`) and customizable Prefix Commands (`=`).
+- **Comprehensive Moderation:** A complete suite for managing server integrity, including timeouts, bans, channel locks, and a robust warning system.
+- **Persistent Storage:** Leverages MongoDB via Mongoose for persistent state management and data storage.
+- **Advanced Event Logging:** Automatically tracks and logs critical server events, including member joins, moderation actions, and channel state mutations.
+- **Developer & Owner Utilities:** Includes modular command hot-reloading, an integrated JavaScript evaluation console, and system diagnostic readouts.
 
 ---
 
-## 🛠️ Installation
+## Architecture & Tech Stack
 
-### Requirements
+AIO-Bot is built with scalability and maintainability in mind, utilizing standard industry practices:
 
-- Node.js 18 or newer
-- npm
-- Discord bot application with token
-- MongoDB database for warning storage
+- **Runtime:** [Node.js](https://nodejs.org/) (v18+)
+- **Library:** [Discord.js (v14)](https://discord.js.org/) for Discord API interactions.
+- **Database:** [MongoDB](https://www.mongodb.com/) with [Mongoose](https://mongoosejs.com/) for Object Data Modeling (ODM).
+- **Linting:** [ESLint](https://eslint.org/) configured for strict code quality enforcement.
+- **Environment Management:** [Dotenv](https://github.com/motdotla/dotenv) for secure configuration injection.
 
-### Setup
+---
 
-1. Clone the repository:
+## Getting Started
 
-```bash
-git clone https://github.com/WIZARDOF-OZ/AIO-Discord-Bot.git
-cd AIO-Bot
-```
+### Prerequisites
+Before running AIO-Bot, ensure you have the following installed and configured:
+- Node.js v18.0.0 or higher
+- `npm` (Node Package Manager)
+- A Discord Bot Application Token (obtainable via the [Discord Developer Portal](https://discord.com/developers/applications))
+- A MongoDB Cluster (e.g., [MongoDB Atlas](https://www.mongodb.com/cloud/atlas))
 
-2. Install dependencies:
+### Installation
 
-```bash
-npm install
-```
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/WIZARDOF-OZ/AIO-Discord-Bot.git
+   cd AIO-Discord-Bot
+   ```
 
-3. Create a `.env` file at the project root with:
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-```env
-TOKEN=your-discord-bot-token
-MONGO_URI=your-mongodb-connection-string
-guildID=your-test-guild-id
-client_id=your-application-client-id
-```
+3. **Configure the environment:**
+   Create a `.env` file in the root directory based on `.env.example`:
+   ```env
+   TOKEN=your-discord-bot-token
+   MONGO_URI=mongodb://user:password@cluster-url...
+   client_id=your-application-client-id
+   guildId=your-test-server-id
+   ```
+   *(Note: If utilizing MongoDB Atlas, ensure you disable the SRV toggle if experiencing local DNS resolution issues, as documented).*
 
-4. Update `src/config.js` with your bot owners and optional prefix settings.
+4. **Register Application Commands:**
+   Deploy the slash commands to your Discord server:
+   ```bash
+   npm run cmd
+   ```
 
-5. Register slash commands for your guild:
+5. **Initialize the Application:**
+   ```bash
+   npm run start
+   ```
+   *(For active development, utilize `npm run dev` to enable `nodemon` auto-restarting).*
 
-```bash
-npm run cmd
-```
+---
 
-6. Start the bot:
+## Configuration
 
-```bash
-npm run start
-```
+Core bot behavior can be modified within `src/config.js`:
 
-For development with auto-reload:
-
-```bash
-npm run dev
+```javascript
+module.exports = {
+    owners: ["YOUR_DISCORD_ID"], // Array of user IDs with owner privileges
+    prefix: "=",                 // Default prefix for classic commands
+    // ...additional configurations
+};
 ```
 
 ---
 
-## ⚙️ Configuration
+## Command Reference
 
-The bot uses `src/config.js` for these values:
+<details>
+<summary><strong>View Slash Commands (<code>/</code>)</strong></summary>
 
-- `token` — Discord bot token
-- `owners` — bot owner IDs for owner-only commands
-- `prefix` — prefix for classic commands (`=` by default)
-- `dev.guild` — development guild IDs used for debugging or deployments
+| Category | Command | Description |
+|---|---|---|
+| **Info** | `/help` | Display the interactive command list. |
+| | `/userinfo` | Show detailed member profile information. |
+| | `/serverinfo` | Show server statistics and settings. |
+| | `/roleinfo` | Show role properties and permissions. |
+| **Fun** | `/avatar` | Get a user's avatar in high resolution. |
+| | `/roll` | Roll dice and return the results. |
+| | `/ping` | Check the bot's websocket latency. |
+| | `/meme`, `/joke` | Fetch random entertainment media. |
+| **Moderation** | `/ban`, `/kick` | Remove users from the server. |
+| | `/timeout` | Temporarily restrict a member's access. |
+| | `/lock`, `/unlock` | Manage channel read/write permissions. |
+| | `/warn` | Add a warning to a user's database record. |
+| **Utility** | `/botinfo` | Show bot uptime, memory usage, and server counts. |
+| | `/reload` | Hot-reload a command without restarting the application. |
+| | `/eval` | Evaluate raw JavaScript code (Owner only). |
 
-The `.env` file is required for `TOKEN`, `MONGO_URI`, `client_id`, and `guildID`.
+</details>
 
----
+<details>
+<summary><strong>View Prefix Commands (<code>=</code>)</strong></summary>
 
-## 📚 Technologies Used
+| Category | Command | Description |
+|---|---|---|
+| **Fun** | `=ping` | Ping the bot. |
+| | `=avatar` | Retrieve a user's avatar. |
+| | `=8ball` | Ask the magic 8-ball a question. |
+| **Moderation** | `=purge` | Bulk delete messages in a channel. |
+| | `=slowmode` | Configure the slowmode of a channel. |
+| **Developer**| `=reload` | Hot-reload specific systems. |
 
-- Node.js
-- Discord.js v14
-- MongoDB / Mongoose
-- quick.db
-- dotenv
-- express
-- canvacord
-- superagent
-- akaneko
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome. If you want to add commands, improve moderation handling, or extend the bot's feature set:
-
-1. Fork the repository
-2. Create a branch for your changes
-3. Submit a pull request with a clear description
-
-Please keep command logic modular and follow the existing folder structure.
-
----
-
-## 🙌 Author
-
-- **WizardOF-Oz** — project creator
+</details>
 
 ---
 
-## 📌 Notes
+## Contributing
 
-- Slash commands are deployed to a specific guild via `src/handlers/deploy-slashcommands.js`.
-- NSFW command placeholders exist in the `src/commands/nsfw` folder but are currently disabled.
-- Use `=help` or `/help` to explore available functionality in any server.
+Contributions, issues, and feature requests are welcome. If you wish to contribute to the codebase:
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/NewFeature`)
+3. Commit your Changes (`git commit -m 'Add NewFeature'`)
+4. Push to the Branch (`git push origin feature/NewFeature`)
+5. Open a Pull Request
+
+**Quality Assurance:** Please ensure that any submitted code passes the existing linting rules. Run `npm run lint` before committing your changes.
+
+---
+
+## License
+
+Distributed under the MIT License. See `LICENSE` for more information.
