@@ -2,10 +2,15 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+
   pull_request:
-    branches: [main]
+    branches:
+      - main
+
   schedule:
+    # Every Monday at 02:30 UTC
     - cron: "30 2 * * 1"
 
 permissions:
@@ -13,27 +18,49 @@ permissions:
   contents: read
   security-events: write
 
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   analyze:
-    name: Analyze JavaScript
+    name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        language: [javascript]
+        language:
+          - javascript-typescript
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
 
+      # Uncomment if your project has a build step
+      # - name: Build Project
+      #   run: npm run build
+
       - name: Autobuild
         uses: github/codeql-action/autobuild@v4
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{ matrix.language }}"
