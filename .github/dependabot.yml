@@ -29,9 +29,9 @@ updates:
           - "discord.js"
           - "@discordjs/*"
 
-      erela:
+      canvacord:
         patterns:
-          - "erela.js*"
+          - "canvacord"
 
       other-dependencies:
         patterns:
