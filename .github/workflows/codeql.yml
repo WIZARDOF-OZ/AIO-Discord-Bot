@@ -34,8 +34,6 @@ jobs:
           - javascript-typescript
 
     steps:
-
-
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -54,10 +52,6 @@ jobs:
         uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
-
-      # Uncomment if your project has a build step
-      # - name: Build Project
-      #   run: npm run build
 
       - name: Autobuild
         uses: github/codeql-action/autobuild@v4
