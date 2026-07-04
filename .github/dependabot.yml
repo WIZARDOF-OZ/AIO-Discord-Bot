@@ -29,10 +29,6 @@ updates:
           - "discord.js"
           - "@discordjs/*"
 
-      canvacord:
-        patterns:
-          - "canvacord"
-
       other-dependencies:
         patterns:
           - "*"
