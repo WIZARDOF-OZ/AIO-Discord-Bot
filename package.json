@@ -1,12 +1,14 @@
 {
   "name": "a-perfect-discord-bot",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A perfect you need for your discord server",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "cmd": "node src/handlers/deploy-slashcommands.js"
+    "cmd": "node src/handlers/deploy-slashcommands.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "repository": {
     "type": "git",
@@ -36,7 +38,9 @@
     "superagent": "^10.3.0"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "eslint": "^10.6.0",
+    "globals": "^17.7.0",
     "nodemon": "^3.0.1"
   }
 }
