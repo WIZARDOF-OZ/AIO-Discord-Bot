@@ -1,0 +1,47 @@
+version: 2
+
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+
+    schedule:
+      interval: "weekly"
+
+    versioning-strategy: increase
+
+    labels:
+      - "dependencies"
+
+    reviewers:
+      - "WIZARDOF-OZ"
+
+    assignees:
+      - "WIZARDOF-OZ"
+
+    commit-message:
+      prefix: "deps"
+
+    open-pull-requests-limit: 5
+
+    groups:
+      discordjs:
+        patterns:
+          - "discord.js"
+          - "@discordjs/*"
+
+      erela:
+        patterns:
+          - "erela.js*"
+
+      other-dependencies:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+
+    schedule:
+      interval: "weekly"
+
+    commit-message:
+      prefix: "ci"
