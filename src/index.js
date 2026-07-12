@@ -1,9 +1,7 @@
 // Defining the values
 
 require('dotenv').config();
-const { Client, GatewayIntentBits, Events, EmbedBuilder, Collection, Partials, REST, Routes } = require('discord.js');
-const fs = require('fs');
-const path = require('node:path');
+const { Client, GatewayIntentBits, EmbedBuilder, Collection, Partials, REST, Routes } = require('discord.js');
 
 const aio = new Client({
     intents: [
