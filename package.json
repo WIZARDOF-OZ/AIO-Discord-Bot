@@ -28,7 +28,7 @@
   "dependencies": {
     "akaneko": "^5.2.8",
     "canvacord": "^6.0.4",
-    "discord.js": "^14.27.0",
+    "discord.js": "^14.28.1",
     "distube": "^5.2.3",
     "dotenv": "^18.0.9",
     "express": "^5.3.0",
